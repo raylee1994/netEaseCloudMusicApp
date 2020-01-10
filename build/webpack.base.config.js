@@ -1,16 +1,23 @@
 var path = require("path");
 var utils = require("./utils");
 
-var entry = {
-    app: path.resolve(__dirname, "..", "src/main.js")
-};
-
 const isdev = process.env.NODE_ENV == "development";
 
 const cssReg = /\.css$/;
 const cssModuleReg = /\.module\.css$/;
 const lessReg = /\.less$/;
 const lessModuleReg = /\.module\.less$/;
+
+var entry = {
+    "react-hot-loader": "react-hot-loader/patch",
+    app: path.resolve(__dirname, "..", "src/main.js")
+};
+
+var output = {
+    path: path.resolve(__dirname, "..", "dist"),
+    filename: isdev ? "js/[name].[hash:8].js" : "js/[name].[chunkhash:8].js",
+    chunkFilename: isdev ? ""
+}
 
 var rules = [
     {
@@ -74,7 +81,7 @@ var resolve = {
     alias: {
         "@": path.resolve(__dirname, "..", "src")
     },
-    extensions: [".css", ".less", ".js", ".jsx", ".json"]
+    extensions: [ ".js", ".less", ".css", ".jsx", ".json"]
 }
 
 var plugins = [
