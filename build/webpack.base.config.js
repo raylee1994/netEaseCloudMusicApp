@@ -1,5 +1,8 @@
 var path = require("path");
 var utils = require("./utils");
+var config = require("./config");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const isdev = process.env.NODE_ENV == "development";
 
@@ -16,8 +19,9 @@ var entry = {
 var output = {
     path: path.resolve(__dirname, "..", "dist"),
     filename: isdev ? "js/[name].[hash:8].js" : "js/[name].[chunkhash:8].js",
-    chunkFilename: isdev ? ""
-}
+    chunkFilename: isdev ? "js/[id].[hash:8].js" : "js/[name].[chunkhash:8].js",
+    publicPath: isdev ? config.dev.assetsPublicPath : config.build.assetsPublicPath
+};
 
 var rules = [
     {
@@ -82,11 +86,19 @@ var resolve = {
         "@": path.resolve(__dirname, "..", "src")
     },
     extensions: [ ".js", ".less", ".css", ".jsx", ".json"]
-}
+};
 
 var plugins = [
-
+    new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, "..", "index.html")
+    }),
+    new CopyWebpackPlugin({
+        form: path.resolve(__dirname, "..", "static"),
+        to: "static"
+    })
 ];
+
+var devTool = isdev ? "cheap-module-eval-source-map" : "source-map";
 
 var optimization = {
 
