@@ -1,8 +1,11 @@
-var path = require("path");
-var utils = require("./utils");
-var config = require("./config");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path");
+const utils = require("./utils");
+const config = require("./config");
+const os = require("os");
+const HappyPack = require("happypack");
+const HappyThreadPool = HappyPack.ThreadPool({size: os.cpus().length - 1});
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const isdev = process.env.NODE_ENV == "development";
 
@@ -25,8 +28,9 @@ var output = {
 
 var rules = [
     {
-        test: /\.(js|jsx)$/,
-        loader: "babel-loader",
+        test: /\.(js|jsx)(\?.*)?$/,
+        // loader: "babel-loader",
+        use: ["happypack/loader?id=babel"],
         exclude: /node_modules/
     },
     {
@@ -40,44 +44,48 @@ var rules = [
     {
         test: cssReg,
         exclude: cssModuleReg,
-        loader: utils.resolveStyle({
-            sourceMap: isdev,
-            importLoaders: 1
-        })
+        // use: utils.resolveStyle({
+        //     sourceMap: isdev,
+        //     importLoaders: 1
+        // })
+        use: ["happypack/loader?id=css"]
     },
     {
         test: cssModuleReg,
         exclude: /node_modules/,
-        loader: utils.resolveStyle({
-            sourceMap: isdev,
-            modules: true,
-            importLoaders: 1
-        })
+        // use: utils.resolveStyle({
+        //     sourceMap: isdev,
+        //     modules: true,
+        //     importLoaders: 1
+        // })
+        use: ["happypack/loader?id=cssModule"]
     },
     {
         test: lessReg,
         exclude: lessModuleReg,
-        loader: utils.resolveStyle({
-            sourceMap: isdev,
-            importLoaders: 2
-        }, {
-            less: {
-                sourceMap: isdev
-            }
-        })
+        // use: utils.resolveStyle({
+        //     sourceMap: isdev,
+        //     importLoaders: 2
+        // }, {
+        //     less: {
+        //         sourceMap: isdev
+        //     }
+        // })
+        use: ["happypack/loader?id=less"]
     },
     {
         test: lessModuleReg,
         exclude: /node_modules/,
-        loader: utils.resolveStyle({
-            sourceMap: isdev,
-            modules: true,
-            importLoaders: 2
-        }, {
-            less: {
-                sourceMap: isdev
-            }
-        })
+        // use: utils.resolveStyle({
+        //     sourceMap: isdev,
+        //     modules: true,
+        //     importLoaders: 2
+        // }, {
+        //     less: {
+        //         sourceMap: isdev
+        //     }
+        // })
+        use: ["happypack/loader?id=lessModule"]
     }
 ];
 
@@ -95,6 +103,53 @@ var plugins = [
     new CopyWebpackPlugin({
         form: path.resolve(__dirname, "..", "static"),
         to: "static"
+    }),
+    new HappyPack({
+        id: "babel",
+        threadPool: HappyThreadPool,
+        loaders: ["babel-loader"]
+    }),
+    new HappyPack({
+        id: "css",
+        threadPool: HappyThreadPool,
+        loaders: utils.resolveStyle({
+            sourceMap: isdev,
+            importLoaders: 1
+        })
+    }),
+    new HappyPack({
+        id: "cssModule",
+        threadPool: HappyThreadPool,
+        loaders: utils.resolveStyle({
+            sourceMap: isdev,
+            modules: true,
+            importLoaders: 1
+        })
+    }),
+    new HappyPack({
+        id: "less",
+        threadPool: HappyThreadPool,
+        loaders: utils.resolveStyle({
+            sourceMap: isdev,
+            importLoaders: 2
+        }, {
+            less: {
+                sourceMap: isdev
+            }
+        })
+    }),
+    new HappyPack({
+        id: "lessModule",
+        threadPool: HappyThreadPool,
+        loaders: utils.resolveStyle({
+            sourceMap: isdev,
+            modules: true,
+            importLoaders: 2
+        }, {
+            less: {
+                sourceMap: isdev
+            }
+        })
     })
 ];
 
