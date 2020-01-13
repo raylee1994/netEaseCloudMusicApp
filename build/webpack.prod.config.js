@@ -1,4 +1,5 @@
 const TerserPlugin = require("terser-webpack-plugin"); 
+const iswsl = require("is-wsl");
 
 const config = {
     mode: "production",
@@ -7,7 +8,9 @@ const config = {
         minimizer: [
             new TerserPlugin({
                 test: /\.(js|jsx)(\?.*)?$/i,
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                cache: true,
+                parallel: !iswsl
             })
         ]
     }
