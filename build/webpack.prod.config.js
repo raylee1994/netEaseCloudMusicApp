@@ -10,7 +10,20 @@ const config = {
                 test: /\.(js|jsx)(\?.*)?$/i,
                 exclude: /node_modules/,
                 cache: true,
-                parallel: !iswsl
+                parallel: !iswsl,
+                terserOptions: {
+                    parse: {
+                        ecma: 8  //es8及以下
+                    },
+                    compress: {
+                        ecma: 5,  //es5及以下
+                        comparisons: false,
+                        inline: 2
+                    },
+                    output: {
+                        ecma: 5  //es5及以下
+                    }
+                }
             })
         ]
     }
