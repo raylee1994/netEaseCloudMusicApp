@@ -156,5 +156,12 @@ var plugins = [
 var devTool = isdev ? "cheap-module-eval-source-map" : "source-map";
 
 var optimization = {
-
+    splitChunks: {
+        name: false,
+        chunks: "all",
+        cacheGroups: {
+            vendor: {
+            }
+        }
+    }
 };
