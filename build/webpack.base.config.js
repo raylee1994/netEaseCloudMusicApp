@@ -161,7 +161,26 @@ var optimization = {
         chunks: "all",
         cacheGroups: {
             vendor: {
+                test: /[\\/]node_modules[\\/]/, // [\\/] 代表可以是\也可以是/
+                name: "js/vendor",
+                enforce: true,
+                priority: 100
             }
+        },
+        runtimeChunk: {
+            name: "js/manifest"
         }
     }
 };
+
+module.exports = {
+    entry,
+    output,
+    module: {
+        rules
+    },
+    resolve,
+    plugins,
+    devTool,
+    optimization
+}

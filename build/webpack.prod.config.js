@@ -39,6 +39,8 @@ const config = {
                     }
                 }
             })
-        ]
+        ],
+        moduleIds: "hashed",
+        nodeEnv: "production"
     }
 }
