@@ -4,5 +4,6 @@ module.exports = {
     },
     build: {
         assetsPublicPath: "/"
-    }
+    },
+    outputPathname: "dist"
 }

@@ -20,7 +20,7 @@ var entry = {
 };
 
 var output = {
-    path: path.resolve(__dirname, "..", "dist"),
+    path: path.resolve(__dirname, "..", config.outputPathname),
     filename: isdev ? "js/[name].[hash:8].js" : "js/[name].[chunkhash:8].js",
     chunkFilename: isdev ? "js/[id].[hash:8].js" : "js/[name].[chunkhash:8].js",
     publicPath: isdev ? config.dev.assetsPublicPath : config.build.assetsPublicPath

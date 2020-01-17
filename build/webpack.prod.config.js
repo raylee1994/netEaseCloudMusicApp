@@ -1,10 +1,15 @@
 const TerserPlugin = require("terser-webpack-plugin"); 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const iswsl = require("is-wsl");
+const ora = require("ora");
+const chalk = require("chalk");
+const rimraf = require("rimraf");
+const path = require("path");
+const config = require("./config");
 
 process.env.NODE_ENV = "production";
 
-const config = {
+const webpackConfig = {
     mode: "production",
     plugins: [
         new MiniCssExtractPlugin({
@@ -51,4 +56,11 @@ const config = {
         ],
         moduleIds: "hashed"
     }
-}
+};
+
+const spinner = ora("building for production");
+spinner.start();
+
+rimraf(path.resolve(__dirname, "..", config.outputPathname), err => {
+
+});
