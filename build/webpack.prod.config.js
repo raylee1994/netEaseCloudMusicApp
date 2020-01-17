@@ -1,8 +1,17 @@
 const TerserPlugin = require("terser-webpack-plugin"); 
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const iswsl = require("is-wsl");
+
+process.env.NODE_ENV = "production";
 
 const config = {
     mode: "production",
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: "css/[name].[contenthash:8].css",
+            chunkFilename: "css/[name].chunk.[contenthash:8].css"
+        })
+    ],
     optimization: {
         minimize: true,
         minimizer: [
@@ -40,7 +49,6 @@ const config = {
                 }
             })
         ],
-        moduleIds: "hashed",
-        nodeEnv: "production"
+        moduleIds: "hashed"
     }
 }
