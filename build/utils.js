@@ -1,4 +1,4 @@
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 exports.resolveStyle = function(loaderOptions, processor) {
     const isdev = process.env.NODE_ENV == "development";

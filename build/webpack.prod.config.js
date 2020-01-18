@@ -5,12 +5,14 @@ const ora = require("ora");
 const chalk = require("chalk");
 const rimraf = require("rimraf");
 const path = require("path");
+const merge = require("webpack-merge");
 const webpack = require("webpack");
+const webpackBaseConfig = require("./webpack.base.config");
 const config = require("./config");
 
 process.env.NODE_ENV = "production";
 
-const webpackConfig = {
+const webpackConfig = merge({
     mode: "production",
     plugins: [
         new MiniCssExtractPlugin({
@@ -57,7 +59,7 @@ const webpackConfig = {
         ],
         moduleIds: "hashed"
     }
-};
+},webpackBaseConfig);
 
 const spinner = ora("building for production");
 spinner.start();
