@@ -11,8 +11,8 @@ webpackBaseConfig.entry["dev-server"] = "webpack/hot/dev-server";
 webpackBaseConfig.entry["react-hot-loader"] = "react-hot-loader/patch";
 
 process.env.NODE_ENV = "development";
-process.env.HOST = "0.0.0.0";
-process.env.PORT = 3000;
+process.env.HOST = "localhost";
+process.env.PORT = 8080;
 
 const serverOptions = {
     host: process.env.HOST,
