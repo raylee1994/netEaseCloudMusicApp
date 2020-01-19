@@ -15,8 +15,7 @@ const lessReg = /\.less$/;
 const lessModuleReg = /\.module\.less$/;
 
 var entry = {
-    "react-hot-loader": "react-hot-loader/patch",
-    app: path.resolve(__dirname, "..", "src/main.js")
+    app: path.resolve(__dirname, "..", "src/index.js")
 };
 
 var output = {
@@ -29,7 +28,6 @@ var output = {
 var rules = [
     {
         test: /\.(js|jsx)(\?.*)?$/,
-        // loader: "babel-loader",
         use: ["happypack/loader?id=babel"],
         exclude: /node_modules/
     },
@@ -44,47 +42,21 @@ var rules = [
     {
         test: cssReg,
         exclude: cssModuleReg,
-        // use: utils.resolveStyle({
-        //     sourceMap: isdev,
-        //     importLoaders: 1
-        // })
         use: ["happypack/loader?id=css"]
     },
     {
         test: cssModuleReg,
         exclude: /node_modules/,
-        // use: utils.resolveStyle({
-        //     sourceMap: isdev,
-        //     modules: true,
-        //     importLoaders: 1
-        // })
         use: ["happypack/loader?id=cssModule"]
     },
     {
         test: lessReg,
         exclude: lessModuleReg,
-        // use: utils.resolveStyle({
-        //     sourceMap: isdev,
-        //     importLoaders: 2
-        // }, {
-        //     less: {
-        //         sourceMap: isdev
-        //     }
-        // })
         use: ["happypack/loader?id=less"]
     },
     {
         test: lessModuleReg,
         exclude: /node_modules/,
-        // use: utils.resolveStyle({
-        //     sourceMap: isdev,
-        //     modules: true,
-        //     importLoaders: 2
-        // }, {
-        //     less: {
-        //         sourceMap: isdev
-        //     }
-        // })
         use: ["happypack/loader?id=lessModule"]
     }
 ];
@@ -100,10 +72,12 @@ var plugins = [
     new HtmlWebpackPlugin({
         template: path.resolve(__dirname, "..", "index.html")
     }),
-    new CopyWebpackPlugin({
-        form: path.resolve(__dirname, "..", "static"),
-        to: "static"
-    }),
+    new CopyWebpackPlugin([
+        {
+            from: path.resolve(__dirname, "..", "static"),
+            to: "static"
+        }
+    ]),
     new HappyPack({
         id: "babel",
         threadPool: HappyThreadPool,
@@ -131,7 +105,8 @@ var plugins = [
         threadPool: HappyThreadPool,
         loaders: utils.resolveStyle({
             sourceMap: isdev,
-            importLoaders: 2
+            importLoaders: 2,
+            javascriptEnabled: true
         }, {
             less: {
                 sourceMap: isdev
@@ -144,7 +119,8 @@ var plugins = [
         loaders: utils.resolveStyle({
             sourceMap: isdev,
             modules: true,
-            importLoaders: 2
+            importLoaders: 2,
+            javascriptEnabled: true
         }, {
             less: {
                 sourceMap: isdev
@@ -153,7 +129,7 @@ var plugins = [
     })
 ];
 
-var devTool = isdev ? "cheap-module-eval-source-map" : "source-map";
+var devtool = isdev ? "cheap-module-eval-source-map" : "source-map";
 
 var optimization = {
     splitChunks: {
@@ -162,14 +138,14 @@ var optimization = {
         cacheGroups: {
             vendor: {
                 test: /[\\/]node_modules[\\/]/, // [\\/] 代表可以是\也可以是/
-                name: "js/vendor",
+                name: "vendor",
                 enforce: true,
                 priority: 100
             }
-        },
-        runtimeChunk: {
-            name: "js/manifest"
         }
+    },
+    runtimeChunk: {
+        name: "manifest"
     }
 };
 
@@ -181,6 +157,6 @@ module.exports = {
     },
     resolve,
     plugins,
-    devTool,
+    devtool,
     optimization
 }

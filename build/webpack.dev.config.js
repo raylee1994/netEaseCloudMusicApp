@@ -8,6 +8,7 @@ const nodeNotifier = require("node-notifier");
 const FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
 
 webpackBaseConfig.entry["dev-server"] = "webpack/hot/dev-server";
+webpackBaseConfig.entry["react-hot-loader"] = "react-hot-loader/patch";
 
 process.env.NODE_ENV = "development";
 process.env.HOST = "0.0.0.0";
@@ -21,7 +22,7 @@ const serverOptions = {
         disableDotRule: true
     },
     https: process.env.HTTPS === 'true',
-    proxy: config.dev.proxy ? config.dev.proxy : {},
+    proxy: baseConfig.dev.proxy ? baseConfig.dev.proxy : {},
     publicPath: baseConfig.dev.assetsPublicPath
 };
 
