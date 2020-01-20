@@ -7,7 +7,9 @@
     "dev": "set NODE_ENV=development&& node build/webpack.dev.config.js",
     "build": "set NODE_ENV=production&& rimraf dist && node build/webpack.prod.config.js"
   },
-  "author": "",
+  "author": {
+    "prototype": "https://mindmap.airmore.cn/doc/20270794125c644b41c2ebdd731b73db"
+  },
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^9.7.3",
