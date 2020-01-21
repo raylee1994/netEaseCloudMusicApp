@@ -28,7 +28,8 @@ var output = {
 var rules = [
     {
         test: /\.(js|jsx)(\?.*)?$/,
-        use: ["happypack/loader?id=babel"],
+        // use: ["happypack/loader?id=babel"],
+        loader: "babel-loader",
         exclude: /node_modules/
     },
     {
@@ -63,7 +64,13 @@ var rules = [
 
 var resolve = {
     alias: {
-        "@": path.resolve(__dirname, "..", "src")
+        "@": path.resolve(__dirname, "..", "src"),
+        "common": path.resolve(__dirname, "..", "src/common"),
+        "components": path.resolve(__dirname, "..", "src/components"),
+        "router": path.resolve(__dirname, "..", "src/router"),
+        "store": path.resolve(__dirname, "..", "src/store"),
+        "views": path.resolve(__dirname, "..", "src/views"),
+        "apis": path.resolve(__dirname, "..", "src/apis")
     },
     extensions: [ ".js", ".less", ".css", ".jsx", ".json"]
 };
@@ -106,10 +113,10 @@ var plugins = [
         loaders: utils.resolveStyle({
             sourceMap: isdev,
             importLoaders: 2,
-            javascriptEnabled: true
         }, {
             less: {
-                sourceMap: isdev
+                sourceMap: isdev,
+                javascriptEnabled: true
             }
         })
     }),
@@ -120,10 +127,10 @@ var plugins = [
             sourceMap: isdev,
             modules: true,
             importLoaders: 2,
-            javascriptEnabled: true
         }, {
             less: {
-                sourceMap: isdev
+                sourceMap: isdev,
+                javascriptEnabled: true
             }
         })
     })

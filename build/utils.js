@@ -5,19 +5,21 @@ exports.resolveStyle = function(loaderOptions, processor) {
 
     let loaders = [
         !isdev && MiniCssExtractPlugin.loader,
-        isdev && {
+        isdev && "style-loader" /* {
             loader: "style-loader",
             options: {
                 sourceMap: true
             }
-        },
+        } */,
         {
             loader: "css-loader",
             options: loaderOptions
         },
         {
             loader: "postcss-loader",
-            sourceMap: isdev
+            options: {
+                sourceMap: true
+            }
         }
     ].filter(Boolean);
 
