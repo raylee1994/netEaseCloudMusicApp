@@ -1,3 +1,5 @@
+const isdev = process.env.NODE_ENV == "development";
+
 export default {
-    apiDomain: "http://localhost:3000/"
+    apiDomain: isdev ? "http://localhost:3000/" : ""
 }

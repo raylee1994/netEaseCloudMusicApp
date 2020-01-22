@@ -5,3 +5,5 @@ const instance = axios.create({
     baseURL: config.apiDomain
 });
 
+export default instance;
+
