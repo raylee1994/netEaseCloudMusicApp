@@ -4,7 +4,7 @@ const queryString = require('querystring')
 const PacProxyAgent = require('pac-proxy-agent')
 const zlib = require('zlib')
 
-// request.debug = true // 开启可看到更详细信息
+request.debug = true // 开启可看到更详细信息
 
 const chooseUserAgent = ua => {
   const userAgentList = [

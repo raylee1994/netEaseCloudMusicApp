@@ -29,8 +29,11 @@ s,i,em{font-style:normal;text-decoration:none;}
 .col-red{color: #C81623!important;}
 
 /*公共类*/
-.w {  /*版心 提取 */
-    width: 1210px;margin:0 auto;
+.wrap {  /*版心 提取 */
+    width: 1100px;margin:0 auto;
+}
+.main {
+    width: 980px;margin: 0 auto;
 }
 .fl {
     float:left
@@ -53,3 +56,5 @@ s,i,em{font-style:normal;text-decoration:none;}
 .font12{ font-size: 12px;}
 .font14{ font-size: 14px;}
 .font16{ font-size: 16px;}
+.blue{color :#0c73c2;}
+.red{color :#f00;}

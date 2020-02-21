@@ -1,4 +1,4 @@
-[
+export default [
 {
     "en": "Angola",
     "cn": "安哥拉",

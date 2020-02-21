@@ -8,7 +8,7 @@ module.exports = (query, request) => {
     phone: query.phone,
     countrycode: query.countrycode,
     password: crypto.createHash('md5').update(query.password).digest('hex'),
-    rememberLogin: 'true'
+    rememberLogin: query.rememberLogin
   }
   return request(
     'POST', `https://music.163.com/weapi/login/cellphone`, data,
