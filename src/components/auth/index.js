@@ -4,8 +4,6 @@ import styles from "./index.module";
 import countryCode from "common/js/country-code";
 import http from "apis/http";
 import apisPaths from "apis/paths";
-import {connect} from "react-redux";
-import {loginCellphone} from "store/user/action";
 import {createAjax} from "common/js/utils";
 
 class Auth extends Component {
@@ -272,6 +270,7 @@ class Auth extends Component {
   render() {
     const InputGroup = Input.Group;
     const { Option } = Select;
+    const form = this.props;
     const optionItems = countryCode.map((item, index) => {
       return (
         <Option value={item.code.substring(1)}>
@@ -401,15 +400,7 @@ class Auth extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  authModalVisibility: state.user.authModalVisibility
-})
+export default const AuthFormModal = Form.create({name: "auth"})(Auth);
 
-const mapDispatchToProps = dispatch => ({
-  loginCellphone: (params, successCallback, failCallback, errCallback) => dispatch(loginCellphone(params, successCallback, failCallback, errCallback)),
-  switchAuthModal: visibility => dispatch(switchAuthModal(visibility))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Auth)
 
 
