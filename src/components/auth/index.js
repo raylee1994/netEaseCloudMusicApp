@@ -295,7 +295,7 @@ class Auth extends Component {
               <Button type="primary" onClick={this.checkPolicy(2)} block>
                 手机号登录
               </Button>
-              <Button type="default" onClick={this.checkPolicy(3)} block>
+              <Button type="default" onClick={this.setStatus(3)} block>
                 注册
               </Button>
             </div>
@@ -345,7 +345,7 @@ class Auth extends Component {
                 <Checkbox onChange={this.changeAutoLogin}>自动登录 </Checkbox>
               </div>
               <div className="fr">
-                <a href="javascript:;" onClick={this.checkPolicy(7)}>
+                <a href="javascript:;" onClick={this.setStatus(7)}>
                   忘记密码？
                 </a>
               </div>
@@ -400,7 +400,7 @@ class Auth extends Component {
   }
 }
 
-export default const AuthFormModal = Form.create({name: "auth"})(Auth);
+export default Form.create({name: "auth"})(Auth);
 
 
 
