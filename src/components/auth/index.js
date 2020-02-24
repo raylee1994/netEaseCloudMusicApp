@@ -20,7 +20,12 @@ class Auth extends Component {
       showTips: false,
       hasPhone: false,
       hasPassword: false,
+      releaseTime: 60
     };
+    this.password1 = React.createRef();
+    this.password2 = React.createRef();
+    this.password3 = React.createRef();
+    this.password4 = React.createRef();
     this.setModalTitle = this.setModalTitle.bind(this);
     this.createFooter = this.createFooter.bind(this);
     this.setStatus = this.setStatus.bind(this);
@@ -34,6 +39,7 @@ class Auth extends Component {
     this.checkPhone3 = this.checkPhone3.bind(this);
     this.checkPassWord3 = this.checkPassWord3.bind(this);
     this.register = this.register.bind(this);
+    this.interval = null;
   }
   setStatus(status) {
     return () => {
@@ -115,67 +121,79 @@ class Auth extends Component {
       });
     };
   }
-  logIn() {
-    if (!this.state.phone) {
-      message.destroy();
-      message.error("请输入手机号码");
-      return;
-    }
-    if (!this.state.password) {
-      message.destroy();
-      message.error("请输入登录密码");
-      return;
-    }
-    if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.state.phone)) {
-      message.destroy();
-      message.error("请输入正确的手机号");
-      return;
-		}
-		this.setState({
-			loading: true
-    });
-    const successCallback = res => {
-      this.switchAuthModal(false)
-      this.setState({
-        loading: false
-      });
-    }
-    const failCallback = res => {
-      message.destroy();
-      message.error(res.data.msg);
-      this.setState({
-        loading: false
-      });
-    }
-    const errCallback = error => {
-      if (error.response) {
-        message.destroy();
-        message.error(error.response.data);
-      } else if (error.request) {
-        message.destroy();
-        message.error(error.request);
-      } else {
-        message.destroy();
-        message.error(error.message);
+  handleSubmit2(e) {
+    e.preventDefault()
+    this.props.form.validateFields((err, values) => {
+      if(!err) {
+        this.setState({
+          loading: true
+        });
+        const successCallback = res => {
+          this.switchAuthModal(false)
+          this.setState({
+            loading: false
+          });
+        }
+        const failCallback = res => {
+          message.destroy();
+          message.error(res.data.msg);
+          this.setState({
+            loading: false
+          });
+        }
+        const errCallback = error => {
+          if (error.response) {
+            message.destroy();
+            message.error(error.response.data);
+          } else if (error.request) {
+            message.destroy();
+            message.error(error.request);
+          } else {
+            message.destroy();
+            message.error(error.message);
+          }
+          this.setState({
+            loading: false
+          });
+        }
+        this.props.loginCellphone({
+          phone: this.state.phone,
+          password: this.state.password,
+          countrycode: this.state.phoneCode
+        }, successCallback, failCallback, errCallback)
+      }
+    })
+  }
+  getCaptcha() {
+    this.interval = setInterval(() => {
+      var releaseTime = this.state.releaseTime
+      if(releaseTime <= 0) {
+        clearInterval(this.interval)
+        this.setState({
+          releaseTime: 60
+        })
+        return
       }
       this.setState({
-        loading: false
-      });
-    }
-    this.props.loginCellphone({
-      phone: this.state.phone,
-      password: this.state.password,
-      countrycode: this.state.phoneCode
-    }, successCallback, failCallback, errCallback)
-  }
-  register() {
-    this.setState({
-      status: 4
-    })
+        releaseTime: releaseTime-1
+      })
+    }, 1000)
     createAjax(http.post(apisPaths["/captcha/sent"], {
-      phone: this.state.phone
+      phone: this.form.getFieldValue("phone")
     }), res => {
 
+    })
+  }
+  handleSubmit3(e) {
+    e.preventDefault()
+    this.props.form.validateFields((err, values) => {
+      if(!err) {
+        this.setState({
+          status: 4,
+          phone: this.form.getFieldValue("phone")
+        })
+        this.getCaptcha()
+      }
     })
   }
   setPhoneCode(e) {
@@ -203,9 +221,6 @@ class Auth extends Component {
         hasPhone: false
       })
     }
-    this.setState({
-      phone: e.target.value
-    });
   }
   checkPassWord3(e) {
     var checkSpace = this.checkSpace(e.target.value)
@@ -220,9 +235,6 @@ class Auth extends Component {
         hasPassword: false
       })
     }
-    this.setState({
-      password: e.target.value
-    });
   }
   showPassWordTips() {
     this.setState({
@@ -251,6 +263,22 @@ class Auth extends Component {
     var str = arr.join("")
     return str
   }
+  nextInput(e, index) {
+    return () => {
+      if(e.target.value.length == 1) {
+        if(index) {
+          this["password"+index].current.focus()
+        }else {
+          this.register()
+        }
+      }
+    }
+  }
+  register() {
+    this.setState({
+      loading: true
+    })
+  }
   getDerivedStateFromProps(props, state) {
     if(props.authModalVisibility == false) {
       return {
@@ -270,7 +298,8 @@ class Auth extends Component {
   render() {
     const InputGroup = Input.Group;
     const { Option } = Select;
-    const form = this.props;
+    const {form} = this.props;
+    const {getFieldDecorator} = form;
     const optionItems = countryCode.map((item, index) => {
       return (
         <Option value={item.code.substring(1)}>
@@ -301,19 +330,19 @@ class Auth extends Component {
             </div>
             <div className={style["modal_1_privacy"]}>
               <Checkbox onChange={this.changePolicy}>
-                同意{" "}
+                同意 
                 <a
                   target="_blank"
                   href="http://st.music.163.com/official-terms/service"
                 >
                   《服务条款》
-                </a>{" "}
+                </a> 
                 <a
                   target="_blank"
                   href="http://st.music.163.com/official-terms/privacy"
                 >
                   《隐私政策》
-                </a>{" "}
+                </a> 
                 <a
                   target="_blank"
                   href="https://st.music.163.com/official-terms/children"
@@ -326,61 +355,102 @@ class Auth extends Component {
         )}
         {this.state.status == 2 && (
           <div className={style["modal_2"]}>
-            <div className={style["modal_2_inputgroup"]}>
-              <InputGroup compact>
-                <Select defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
-                  {optionItems}
-                </Select>
-                <Input placeholder="请输入手机号" onChange={this.setPhone} />
-              </InputGroup>
+            <Form onSubmit={this.handleSubmit2}>
+              <div className={style["modal_2_inputgroup"]}>
+                <Form.Item>
+                  <InputGroup compact>
+                    <Select defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
+                      {optionItems}
+                    </Select>
+                    {
+                      getFieldDecorator("phone", {
+                        rules: [{
+                          required: true,
+                          message: "请输入手机号码"
+                          },{
+                          type: /^1(3|4|5|6|7|8|9)\d{9}$/,
+                          message: "请输入正确的手机号"
+                        }]
+                      })(<Input placeholder="请输入手机号" />)
+                    }
+                    <Input placeholder="请输入手机号" onChange={this.setPhone} />
+                  </InputGroup>
+                </Form.Item>
+                <br />
+                <Form.Item>
+                  {
+                    getFieldDecorator("password", {
+                      rules: [{
+                        required: true,
+                        message: "请输入登录密码"
+                      }]
+                    })(<Input.Password placeholder="请输入密码" autocomplete="off" />)
+                  }
+                </Form.Item>
+              </div>
+              <div className="clearfix">
+                <div className="fl">
+                  <Form.Item>
+                    <Checkbox onChange={this.changeAutoLogin}>自动登录 </Checkbox>
+                  </Form.Item>
+                </div>
+                <div className="fr">
+                  <a href="javascript:;" onClick={this.setStatus(7)}>
+                    忘记密码？
+                  </a>
+                </div>
+              </div>
               <br />
-              <Input.Password
-                placeholder="请输入密码"
-                autocomplete="off"
-                onChange={this.setPassword}
-              />
-            </div>
-            <div className="clearfix">
-              <div className="fl">
-                <Checkbox onChange={this.changeAutoLogin}>自动登录 </Checkbox>
-              </div>
-              <div className="fr">
-                <a href="javascript:;" onClick={this.setStatus(7)}>
-                  忘记密码？
-                </a>
-              </div>
-            </div>
-            <br />
-            <Button type="primary" onClick={this.logIn} loading={this.state.loading} block>
-              登录
-            </Button>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" loading={this.state.loading} block>
+                  登录
+                </Button>
+              </Form.Item>
+            </Form>
           </div>
         )}
         {this.state.status == 3 && (
           <div className={style["modal_3"]}>
-            <div className={style["modal_3_inputgroup"]}>
-              <p>手机号：</p> 
-              <InputGroup compact>
-                <Select defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
-                  {optionItems}
-                </Select>
-                <Input placeholder="请输入手机号" onChange={this.checkPhone3} />
-              </InputGroup>
-              <p>密码：</p> 
-              <Input.Password
-                placeholder="设置登录密码，不少于6位"
-                autocomplete="off"
-                onChange={this.checkPassWord3}
-                onFocus={this.showPassWordTips}
-              />
-              <p style={{display: this.state.showTips ? "block" : "none"}} className={this.checkSpace(this.state.password)}>密码不能包含空格</p> 
-              <p style={{display: this.state.showTips ? "block" : "none"}} className={this.checkFormat(this.state.password)}>包含字母、数字、符号中至少两种</p> 
-              <p style={{display: this.state.showTips ? "block" : "none"}} className={this.checkLength(this.state.password)}>密码长度为6-16位</p> 
-            </div>
-            <br />
-            <Button type="primary" disabled={!this.hasPhone || !this.hasPassword} onClick={this.register} block>
-              下一步
-            </Button>
+            <Form onSubmit={this.handleSubmit3}>
+              <div className={style["modal_3_inputgroup"]}>
+                <p>手机号：</p> 
+                <Form.Item>
+                  <InputGroup compact>
+                    <Select defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
+                      {optionItems}
+                    </Select>
+                    {
+                      getFieldDecorator("phone", {
+                        rules: [{
+                          required: true,
+                          message: "请输入手机号码"
+                          },{
+                          type: /^1(3|4|5|6|7|8|9)\d{9}$/,
+                          message: "请输入正确的手机号"
+                        }]
+                      })(<Input placeholder="请输入手机号" onChange={this.checkPhone3} />)
+                    }
+                  </InputGroup>
+                </Form.Item>
+                <p>密码：</p> 
+                <Form.Item>
+                  {
+                    getFieldDecorator("password", {})(<Input.Password
+                      placeholder="设置登录密码，不少于6位"
+                      autocomplete="off"
+                      onChange={this.checkPassWord3}
+                      onFocus={this.showPassWordTips}
+                    />)
+                  }
+                </Form.Item>
+                <p style={{display: this.state.showTips ? "block" : "none"}} className={this.checkSpace(form.getFieldValue("password"))}>密码不能包含空格</p> 
+                <p style={{display: this.state.showTips ? "block" : "none"}} className={this.checkFormat(form.getFieldValue("password"))}>包含字母、数字、符号中至少两种</p> 
+                <p style={{display: this.state.showTips ? "block" : "none"}} className={this.checkLength(form.getFieldValue("password"))}>密码长度为6-16位</p> 
+              </div>
+              <Button type="primary" htmlType="submit" disabled={!this.hasPhone || !this.hasPassword} block>
+                下一步
+              </Button>
+            </Form>
           </div>
         )}
         {this.state.status == 4 && (
@@ -389,8 +459,25 @@ class Auth extends Component {
               <p>你的手机号：+{this.state.phoneCode} {this.hidePhone(this.state.phone)}</p> 
               <p>为了安全，我们会给你发送短信验证码</p>
             </div>
-            <br />
-            <Button type="primary" disabled={!this.hasPhone || !this.hasPassword} onClick={this.register} block>
+            <div className={style["modal_4_password"]}>
+              <Input className={style["modal_4_password1"]} ref={this.password1} maxLength="1" onChange={e => this.nextInput(e, 2)} />
+              <Input className={style["modal_4_password2"]} ref={this.password2} maxLength="1" onChange={e => this.nextInput(e, 3)} />
+              <Input className={style["modal_4_password3"]} ref={this.password3} maxLength="1" onChange={e => this.nextInput(e, 4)} />
+              <Input className={style["modal_4_password4"]} ref={this.password4} maxLength="1" onChange={e => this.nextInput(e)} />
+            </div> 
+            <div className={style["modal_4_captcha"] + " clearfix"}>
+              {
+                this.state.releaseTime <= 0 && (
+                  <div className={style["modal_4_getCaptcha"] + " fr blue"} onClick={this.getCaptcha}>重新获取</div>
+                )
+              }
+              {
+                this.state.releaseTime > 0 && (
+                  <div className={style["modal_4_countdown"] + " fr blue"}>{this.state.releaseTime}S</div>
+                )
+              }
+            </div>
+            <Button type="primary" loading={this.state.loading} onClick={this.register} block>
               下一步
             </Button>
           </div>
