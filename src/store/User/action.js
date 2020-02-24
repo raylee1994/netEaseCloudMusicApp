@@ -19,6 +19,28 @@ export const loginCellphone = function(params, successCallback, failCallback, er
                     avatarUrl: res.data.profile.avatarUrl,
                     userId: res.data.profile.userId
                 }))
+                successCallback && successCallback(res)
+            }else {
+                dispatch(switchUserStatus(3))
+                failCallback && failCallback(res)
+            }
+        }, err => {
+            dispatch(switchUserStatus(3))
+            errCallback && errCallback(err)
+        })
+    }
+}
+
+export const registerCellphone = function(params, successCallback, failCallback, errCallback) {
+    return function (dispatch) {
+        dispatch(switchUserStatus(1))
+        http.post(apisPath["register/cellphone"], params).then(res => {
+            if(res.data.code == 200) {
+                dispatch(switchUserStatus(2))
+                dispatch(setUserProfile({
+                    avatarUrl: res.data.profile.avatarUrl,
+                    userId: res.data.profile.userId
+                }))
                 successCallback(res)
             }else {
                 dispatch(switchUserStatus(3))

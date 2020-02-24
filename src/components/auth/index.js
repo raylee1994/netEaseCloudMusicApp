@@ -4,7 +4,7 @@ import styles from "./index.module";
 import countryCode from "common/js/country-code";
 import http from "apis/http";
 import apisPaths from "apis/paths";
-import {createAjax} from "common/js/utils";
+import {createAjax, errorMessage} from "common/js/utils";
 
 class Auth extends Component {
   constructor(props) {
@@ -22,10 +22,10 @@ class Auth extends Component {
       hasPassword: false,
       releaseTime: 60
     };
-    this.password1 = React.createRef();
-    this.password2 = React.createRef();
-    this.password3 = React.createRef();
-    this.password4 = React.createRef();
+    this.captcha1 = React.createRef();
+    this.captcha2 = React.createRef();
+    this.captcha3 = React.createRef();
+    this.captcha4 = React.createRef();
     this.setModalTitle = this.setModalTitle.bind(this);
     this.createFooter = this.createFooter.bind(this);
     this.setStatus = this.setStatus.bind(this);
@@ -37,7 +37,7 @@ class Auth extends Component {
     this.showPassWordTips = this.showPassWordTips.bind(this);
     this.logIn = this.logIn.bind(this);
     this.checkPhone3 = this.checkPhone3.bind(this);
-    this.checkPassWord3 = this.checkPassWord3.bind(this);
+    this.checkPassword3 = this.checkPassword3.bind(this);
     this.register = this.register.bind(this);
     this.interval = null;
   }
@@ -110,10 +110,7 @@ class Auth extends Component {
   checkPolicy(status) {
     return () => {
       if (!this.state.agree) {
-        message.destroy();
-        message.open({
-          content: "请先勾选同意《服务条款》、《隐私政策》、《儿童隐私政策》"
-        });
+        errorMessage("请先勾选同意《服务条款》、《隐私政策》、《儿童隐私政策》")
         return;
       }
       this.setState({
@@ -135,22 +132,18 @@ class Auth extends Component {
           });
         }
         const failCallback = res => {
-          message.destroy();
-          message.error(res.data.msg);
+          errorMessage(res.data.msg)
           this.setState({
             loading: false
           });
         }
         const errCallback = error => {
           if (error.response) {
-            message.destroy();
-            message.error(error.response.data);
+            errorMessage(error.response.data)
           } else if (error.request) {
-            message.destroy();
-            message.error(error.request);
+            errorMessage(error.request)
           } else {
-            message.destroy();
-            message.error(error.message);
+            errorMessage(error.message)
           }
           this.setState({
             loading: false
@@ -178,11 +171,9 @@ class Auth extends Component {
         releaseTime: releaseTime-1
       })
     }, 1000)
-    createAjax(http.post(apisPaths["/captcha/sent"], {
+    createAjax(http.post(apisPaths["captcha/sent"], {
       phone: this.form.getFieldValue("phone")
-    }), res => {
-
-    })
+    }))
   }
   handleSubmit3(e) {
     e.preventDefault()
@@ -216,13 +207,14 @@ class Auth extends Component {
       this.setState({
         hasPhone: true
       })
+      this.setPhone(e)
     }else {
       this.setState({
         hasPhone: false
       })
     }
   }
-  checkPassWord3(e) {
+  checkPassword3(e) {
     var checkSpace = this.checkSpace(e.target.value)
     var checkLength = this.checkLength(e.target.value)
     var checkFormat = this.checkFormat(e.target.value)
@@ -230,6 +222,7 @@ class Auth extends Component {
       this.setState({
         hasPassword: true
       })
+      this.setPassword(e)
     }else {
       this.setState({
         hasPassword: false
@@ -265,6 +258,7 @@ class Auth extends Component {
   }
   nextInput(e, index) {
     return () => {
+      e.target.value = e.target.value.replace(/\s/, "")
       if(e.target.value.length == 1) {
         if(index) {
           this["password"+index].current.focus()
@@ -275,8 +269,41 @@ class Auth extends Component {
     }
   }
   register() {
+    if(this.captcha1.current.value == "" || this.captcha2.current.value == "" || this.captcha3.current.value == "" || this.captcha4.current.value == "") {
+      message.destroy();
+      message.open({
+        content: "请输入验证码"
+      });
+      return;
+    }
     this.setState({
       loading: true
+    })
+    createAjax(http.post(apisPaths["captcha/verify"], {
+      phone: this.state.phone,
+      captcha: this.captcha1.current.value + this.captcha2.current.value + this.captcha3.current.value + this.captcha4.current.value
+    }), res => {
+      createAjax(http.post(apisPaths["cellphone/existence/check"], {
+        phone: this.state.phone
+      }, res => {
+        if(res.data.exist == 1) { //已注册
+          this.props.registerCellphone({
+            phone: this.state.phone,
+            password: this.state.password,
+            captcha: this.captcha1.current.value + this.captcha2.current.value + this.captcha3.current.value + this.captcha4.current.value
+          })
+        }else {
+
+        }
+      })
+    }, () => {
+      this.setState({
+        loading: false
+      })
+    }, () => {
+      this.setState({
+        loading: false
+      })
     })
   }
   getDerivedStateFromProps(props, state) {
@@ -438,7 +465,7 @@ class Auth extends Component {
                     getFieldDecorator("password", {})(<Input.Password
                       placeholder="设置登录密码，不少于6位"
                       autocomplete="off"
-                      onChange={this.checkPassWord3}
+                      onChange={this.checkPassword3}
                       onFocus={this.showPassWordTips}
                     />)
                   }
@@ -460,10 +487,10 @@ class Auth extends Component {
               <p>为了安全，我们会给你发送短信验证码</p>
             </div>
             <div className={style["modal_4_password"]}>
-              <Input className={style["modal_4_password1"]} ref={this.password1} maxLength="1" onChange={e => this.nextInput(e, 2)} />
-              <Input className={style["modal_4_password2"]} ref={this.password2} maxLength="1" onChange={e => this.nextInput(e, 3)} />
-              <Input className={style["modal_4_password3"]} ref={this.password3} maxLength="1" onChange={e => this.nextInput(e, 4)} />
-              <Input className={style["modal_4_password4"]} ref={this.password4} maxLength="1" onChange={e => this.nextInput(e)} />
+              <Input className={style["modal_4_captcha1"]} ref={this.captcha1} maxLength="1" onChange={e => this.nextInput(e, 2)} />
+              <Input className={style["modal_4_captcha2"]} ref={this.captcha2} maxLength="1" onChange={e => this.nextInput(e, 3)} />
+              <Input className={style["modal_4_captcha3"]} ref={this.captcha3} maxLength="1" onChange={e => this.nextInput(e, 4)} />
+              <Input className={style["modal_4_captcha4"]} ref={this.captcha4} maxLength="1" onChange={e => this.nextInput(e)} />
             </div> 
             <div className={style["modal_4_captcha"] + " clearfix"}>
               {

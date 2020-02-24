@@ -1,3 +1,12 @@
+import {message} from "antd";
+
+export function errorMessage(msg) {
+    message.destroy();
+    message.open({
+      content: msg
+    });
+}
+
 export function isEmptyObject(obj) {
     for (var key in obj) {
         return false;
@@ -17,21 +26,23 @@ export function debounce(fn, delay=200) {
     }
 }
 
-export function createAjax(api, callback) {
+export function createAjax(api, callback, failCallback, errCallback) {
     api.then(res => {
         if(res.data.code == 200) {
-            callback(res)
+            callback && callback(res)
         }else {
-            alert(res.data.msg)
+            errorMessage(res.data.msg)
+            failCallback && failCallback()
         }
     }, error => {
         if (error.response) {
-            alert(error.response.data);
+            errorMessage(error.response.data)
         } else if (error.request) {
-            alert(error.request);
+            errorMessage(error.request)
         } else {
-            alert(error.message);
+            errorMessage(error.message)
         }
+        errCallback && errCallback()
     })
 }
 

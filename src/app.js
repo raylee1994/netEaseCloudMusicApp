@@ -5,7 +5,7 @@ import routes from "router";
 import RouterGuard from "router/roterGuard";
 import Loading from "components/loading";
 import {connect} from "react-redux";
-import {loginRefresh, loginCellphone, switchAuthModal} from "./store/User/action";
+import {loginRefresh, loginCellphone, switchAuthModal, registerCellphone} from "./store/User/action";
 import AuthFormModal from "components/auth";
 
 class App extends component {
@@ -42,6 +42,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     loginRefresh: () => dispatch(loginRefresh),
     loginCellphone: (params, successCallback, failCallback, errCallback) => dispatch(loginCellphone(params, successCallback, failCallback, errCallback)),
+    registerCellphone: (params, successCallback, failCallback, errCallback) => dispatch(registerCellphone(params, successCallback, failCallback, errCallback)),
     switchAuthModal: visibility => dispatch(switchAuthModal(visibility))
 })
 
