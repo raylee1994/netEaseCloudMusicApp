@@ -6,6 +6,7 @@ import RouterGuard from "router/roterGuard";
 import Loading from "components/loading";
 import {connect} from "react-redux";
 import {loginRefresh, loginCellphone, switchAuthModal, registerCellphone} from "./store/User/action";
+import {refreshPage} from "store/Page";
 import AuthFormModal from "components/auth";
 
 class App extends component {
@@ -16,7 +17,7 @@ class App extends component {
         return (
             <React.Fragment>
                 <MyHeader></MyHeader>
-                <AuthFormModal authModalVisibility={this.props.authModalVisibility} loginCellphone={this.props.loginCellphone} switchAuthModal={this.props.switchAuthModal}></AuthFormModal>
+                <AuthFormModal authModalVisibility={this.props.authModalVisibility} loginCellphone={this.props.loginCellphone} switchAuthModal={this.props.switchAuthModal} refreshPage={this.props.refreshPage}></AuthFormModal>
                 <BrowserRouter>
                     <Suspense fallback={<Loading></Loading>}>
                         <Switch>
@@ -43,7 +44,8 @@ const mapDispatchToProps = dispatch => ({
     loginRefresh: () => dispatch(loginRefresh),
     loginCellphone: (params, successCallback, failCallback, errCallback) => dispatch(loginCellphone(params, successCallback, failCallback, errCallback)),
     registerCellphone: (params, successCallback, failCallback, errCallback) => dispatch(registerCellphone(params, successCallback, failCallback, errCallback)),
-    switchAuthModal: visibility => dispatch(switchAuthModal(visibility))
+    switchAuthModal: visibility => dispatch(switchAuthModal(visibility)),
+    refreshPage: status => dispatch(refreshPage(status))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

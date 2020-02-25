@@ -5,12 +5,13 @@ import countryCode from "common/js/country-code";
 import http from "apis/http";
 import apisPaths from "apis/paths";
 import {createAjax, errorMessage} from "common/js/utils";
+import {withRouter} from "react-router-dom";
 
 class Auth extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: 1, // 1 -> 登录； 2 -> 手机号登录； 3 -> 手机号注册1； 4 -> 手机号注册2； 5 -> 手机号注册3； 6 -> 手机号注册4； 7 -> 重设密码1；8 -> 重设密码2；
+      status: 1, // 1 -> 登录； 2 -> 手机号登录； 3 -> 手机号注册1； 4 -> 手机号注册2； 5 -> 手机号注册3； 6 -> 手机号注册4； 7 -> 重设密码1；8 -> 重设密码2；9 -> 手机号注册5；
       agree: false,
       phoneCode: "86",
       phone: "",
@@ -20,7 +21,9 @@ class Auth extends Component {
       showTips: false,
       hasPhone: false,
       hasPassword: false,
-      releaseTime: 60
+      releaseTime: 60,
+      username: "",
+      captcha: ""
     };
     this.captcha1 = React.createRef();
     this.captcha2 = React.createRef();
@@ -43,16 +46,7 @@ class Auth extends Component {
   }
   setStatus(status) {
     return () => {
-      this.setState({
-        status,
-        agree: false,
-        phoneCode: "86",
-        phone: "",
-        password: "",
-        showTips: false,
-        hasPhone: false,
-        hasPassword: false,
-      });
+      this.setState(this.resetState(status));
     };
   }
   setModalTitle() {
@@ -65,6 +59,7 @@ class Auth extends Component {
       case 4:
       case 5:
       case 6:
+      case 9:
         return "手机号注册";
       case 7:
       case 8:
@@ -126,7 +121,7 @@ class Auth extends Component {
           loading: true
         });
         const successCallback = res => {
-          this.switchAuthModal(false)
+          this.props.switchAuthModal(false)
           this.setState({
             loading: false
           });
@@ -185,6 +180,25 @@ class Auth extends Component {
         })
         this.getCaptcha()
       }
+    })
+  }
+  handleSubmit5(e) {
+    e.preventDefault()
+    this.setState({
+      loading: true
+    })
+    this.props.registerCellphone({
+      phone: this.state.phone,
+      password: this.state.password,
+      captcha: this.state.captcha,
+      nickname: this.state.nickname
+    }, res => {
+      this.refresh()
+    }, res => {
+      errorMessage(res.data.msg)
+      this.setState({
+        loading: false
+      })
     })
   }
   setPhoneCode(e) {
@@ -270,10 +284,7 @@ class Auth extends Component {
   }
   register() {
     if(this.captcha1.current.value == "" || this.captcha2.current.value == "" || this.captcha3.current.value == "" || this.captcha4.current.value == "") {
-      message.destroy();
-      message.open({
-        content: "请输入验证码"
-      });
+      errorMessage("请输入验证码");
       return;
     }
     this.setState({
@@ -283,17 +294,27 @@ class Auth extends Component {
       phone: this.state.phone,
       captcha: this.captcha1.current.value + this.captcha2.current.value + this.captcha3.current.value + this.captcha4.current.value
     }), res => {
+      this.setState({
+        captcha: this.captcha1.current.value + this.captcha2.current.value + this.captcha3.current.value + this.captcha4.current.value
+      })
       createAjax(http.post(apisPaths["cellphone/existence/check"], {
         phone: this.state.phone
-      }, res => {
+      }), res => {
         if(res.data.exist == 1) { //已注册
           this.props.registerCellphone({
             phone: this.state.phone,
             password: this.state.password,
-            captcha: this.captcha1.current.value + this.captcha2.current.value + this.captcha3.current.value + this.captcha4.current.value
+            captcha: this.state.captcha
+          }, res => {
+            this.setState({
+              status: 9,
+              username: res.data.profile.nickname
+            })
           })
-        }else {
-
+        }else { //未注册
+          this.setState({
+            status: 5
+          })
         }
       })
     }, () => {
@@ -306,19 +327,35 @@ class Auth extends Component {
       })
     })
   }
+  refresh() {
+    this.props.switchAuthModal(false)
+    this.props.refreshPage(true)
+  }
+  closeModal() {
+    if(this.state.status == 9) {
+      this.props.refreshPage(true)
+    }
+    this.setState(this.resetState())
+  }
+  resetState(status = 1) {
+    return {
+      status, 
+      agree: false,
+      phoneCode: "86",
+      phone: "",
+      password: "",
+      remember_login: 1,
+      loading: false,
+      hasPhone: false,
+      hasPassword: false,
+      releaseTime: 60,
+      username: "",
+      captcha: ""
+    }
+  }
   getDerivedStateFromProps(props, state) {
     if(props.authModalVisibility == false) {
-      return {
-        status: 1, 
-        agree: false,
-        phoneCode: "86",
-        phone: "",
-        password: "",
-        remember_login: 1,
-        loading: false,
-        hasPhone: false,
-        hasPassword: false,
-      }
+      return this.resetState()
     }
     return null
   }
@@ -343,6 +380,7 @@ class Auth extends Component {
           background: "none"
         }}
         wrapClassName={styles.authModal}
+        onCancel={this.closeModal}
       >
         {this.state.status == 1 && (
           <div className={style["modal_1"]}>
@@ -482,10 +520,8 @@ class Auth extends Component {
         )}
         {this.state.status == 4 && (
           <div className={style["modal_4"]}>
-            <div className={style["modal_4_inputgroup"]}>
-              <p>你的手机号：+{this.state.phoneCode} {this.hidePhone(this.state.phone)}</p> 
-              <p>为了安全，我们会给你发送短信验证码</p>
-            </div>
+            <p>你的手机号：+{this.state.phoneCode} {this.hidePhone(this.state.phone)}</p> 
+            <p>为了安全，我们会给你发送短信验证码</p>
             <div className={style["modal_4_password"]}>
               <Input className={style["modal_4_captcha1"]} ref={this.captcha1} maxLength="1" onChange={e => this.nextInput(e, 2)} />
               <Input className={style["modal_4_captcha2"]} ref={this.captcha2} maxLength="1" onChange={e => this.nextInput(e, 3)} />
@@ -509,12 +545,41 @@ class Auth extends Component {
             </Button>
           </div>
         )}
+        {this.state.status == 5 && (
+          <div className={style["modal_5"]}>
+            <Form onSubmit={this.handleSubmit5}>
+              <p>取一个名称，让大家记住你</p>
+              <Form.Item>
+                {
+                  getFieldDecorator("nickname", {
+                    rules: [{
+                      required: true,
+                      message: "请输入昵称"
+                    }]
+                  })(<Input placeholder="请输入昵称" />)
+                }
+              </Form.Item>
+              <Button type="primary" htmlType="submit" loading={this.state.loading} block>
+                开启云音乐
+              </Button>
+            </Form>
+          </div>
+        )}
+        {this.state.status == 9 && (
+          <div className={style["modal_9"]}>
+            <p>改手机号已与云音乐账号 <b>{this.state.username}</b> 绑定，</p> 
+            <p>以后你可以直接用改手机号+密码登录</p>
+            <Button type="primary" onClick={this.refresh} block>
+              知道了
+            </Button>
+          </div>
+        )}
       </Modal>
     );
   }
 }
 
-export default Form.create({name: "auth"})(Auth);
+export default Form.create({name: "auth"})(withRouter(Auth));
 
 
 

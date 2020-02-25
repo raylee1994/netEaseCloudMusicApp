@@ -41,14 +41,14 @@ export const registerCellphone = function(params, successCallback, failCallback,
                     avatarUrl: res.data.profile.avatarUrl,
                     userId: res.data.profile.userId
                 }))
-                successCallback(res)
+                successCallback && successCallback(res)
             }else {
                 dispatch(switchUserStatus(3))
-                failCallback(res)
+                failCallback && failCallback(res)
             }
         }, err => {
             dispatch(switchUserStatus(3))
-            errCallback(err)
+            errCallback && errCallback(err)
         })
     }
 }
