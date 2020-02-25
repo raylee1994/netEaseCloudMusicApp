@@ -17,14 +17,14 @@ class App extends component {
         return (
             <React.Fragment>
                 <MyHeader></MyHeader>
-                <AuthFormModal authModalVisibility={this.props.authModalVisibility} loginCellphone={this.props.loginCellphone} switchAuthModal={this.props.switchAuthModal} refreshPage={this.props.refreshPage}></AuthFormModal>
+                <AuthFormModal authModalVisibility={this.props.authModalVisibility} loginCellphone={this.props.loginCellphone} switchAuthModal={this.props.switchAuthModal} is_refresh_page={this.props.is_refresh_page} refreshPage={this.props.refreshPage}></AuthFormModal>
                 <BrowserRouter>
                     <Suspense fallback={<Loading></Loading>}>
                         <Switch>
                             {
                                 routes.forEach((element, index) => {
                                     return (
-                                        <Route key={index} path={element.path} exact={element.exact} render={() => <RouterGuard component={element.component}></RouterGuard>}></Route>
+                                        <Route key={index} path={element.path} exact={element.exact} render={() => <RouterGuard key={this.props.is_refresh_page} component={element.component}></RouterGuard>}></Route>
                                     )
                                 })
                             }
@@ -37,6 +37,7 @@ class App extends component {
 }
 
 const mapStateToProps = state => ({
+    is_refresh_page: state.is_refresh_page,
     authModalVisibility: state.user.authModalVisibility
 })
 

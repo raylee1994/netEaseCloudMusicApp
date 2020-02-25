@@ -11,7 +11,7 @@ class Auth extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: 1, // 1 -> 登录； 2 -> 手机号登录； 3 -> 手机号注册1； 4 -> 手机号注册2； 5 -> 手机号注册3； 6 -> 手机号注册4； 7 -> 重设密码1；8 -> 重设密码2；9 -> 手机号注册5；
+      status: 1, // 1 -> 登录； 2 -> 手机号登录； 3 -> 手机号注册1； 4 -> 手机号注册2； 5 -> 手机号注册3； 6 -> 手机号注册4； 7 -> 重设密码1；8 -> 重设密码2；
       agree: false,
       phoneCode: "86",
       phone: "",
@@ -59,7 +59,6 @@ class Auth extends Component {
       case 4:
       case 5:
       case 6:
-      case 9:
         return "手机号注册";
       case 7:
       case 8:
@@ -307,7 +306,7 @@ class Auth extends Component {
             captcha: this.state.captcha
           }, res => {
             this.setState({
-              status: 9,
+              status: 6,
               username: res.data.profile.nickname
             })
           })
@@ -329,11 +328,11 @@ class Auth extends Component {
   }
   refresh() {
     this.props.switchAuthModal(false)
-    this.props.refreshPage(true)
+    this.props.refreshPage(!this.props.is_refresh_page)
   }
   closeModal() {
-    if(this.state.status == 9) {
-      this.props.refreshPage(true)
+    if(this.state.status == 6) {
+      this.props.refreshPage(!this.props.is_refresh_page)
     }
     this.setState(this.resetState())
   }
@@ -353,9 +352,22 @@ class Auth extends Component {
       captcha: ""
     }
   }
-  getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps = (props, state) => {
     if(props.authModalVisibility == false) {
-      return this.resetState()
+      return {
+        status, 
+        agree: false,
+        phoneCode: "86",
+        phone: "",
+        password: "",
+        remember_login: 1,
+        loading: false,
+        hasPhone: false,
+        hasPassword: false,
+        releaseTime: 60,
+        username: "",
+        captcha: ""
+      }
     }
     return null
   }
@@ -556,7 +568,7 @@ class Auth extends Component {
                       required: true,
                       message: "请输入昵称"
                     }]
-                  })(<Input placeholder="请输入昵称" />)
+                  })(<Input placeholder="昵称不少于4个字母或2个汉字" />)
                 }
               </Form.Item>
               <Button type="primary" htmlType="submit" loading={this.state.loading} block>
@@ -565,8 +577,8 @@ class Auth extends Component {
             </Form>
           </div>
         )}
-        {this.state.status == 9 && (
-          <div className={style["modal_9"]}>
+        {this.state.status == 6 && (
+          <div className={style["modal_6"]}>
             <p>改手机号已与云音乐账号 <b>{this.state.username}</b> 绑定，</p> 
             <p>以后你可以直接用改手机号+密码登录</p>
             <Button type="primary" onClick={this.refresh} block>
