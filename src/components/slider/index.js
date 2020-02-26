@@ -18,11 +18,11 @@ export default class Slider extends Component {
     render() {
         const prevStyle = {left: this.props.switchBtnPos == "in" ? "20px" : "-20px"};
         const nextStyle = {right: this.props.switchBtnPos == "in" ? "20px" : "-20px"};
-        const carouselList = this.props.list.map((item) => {
+        const carouselList = this.props.bannerList.map((item) => {
             if(item.to) {
                 return <Link to={() => {}}></Link>
             }else {
-                return <Link to={item.to}><img src={item.img} /></Link>
+                return <Link to={item.to}><img className={styles["slide_img"]} src={item.img} /></Link>
             }
         })
         return (
@@ -36,7 +36,7 @@ export default class Slider extends Component {
                     )
                 }
                 <Carousel ref={this.slider} autoplay={this.props.autoplay} dots={this.props.dots}>
-                
+                    {carouselList}
                 </Carousel>
             </div>
         )
@@ -44,14 +44,14 @@ export default class Slider extends Component {
 }
 
 Slider.defaultProps = {
-    list: [],
+    bannerList: [],
     switchBtn: false,
     switchBtnPos: "out",
     dots: true,
     autoplay: true
 }
 Slider.propTypes = {
-    list: PropTypes.array,
+    bannerList: PropTypes.array,
     switchBtn: PropTypes.bool,
     switchBtnPos: PropTypes.oneOf(["in", "out"]),
     dots: PropTypes.bool,

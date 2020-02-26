@@ -7,11 +7,13 @@ import Loading from "components/loading";
 import {connect} from "react-redux";
 import {loginRefresh, loginCellphone, switchAuthModal, registerCellphone} from "./store/User/action";
 import {refreshPage} from "store/Page";
+import {getPlaylistTag} from "store/Playlist";
 import AuthFormModal from "components/auth";
 
 class App extends Component {
     componentDidMount() {
-        this.props.loginRefresh()
+        this.props.loginRefresh();
+        this.props.getPlaylistTag();
     }
     render() {
         return (
@@ -38,7 +40,8 @@ class App extends Component {
 
 const mapStateToProps = state => ({
     is_refresh_page: state.is_refresh_page,
-    authModalVisibility: state.user.authModalVisibility
+    authModalVisibility: state.user.authModalVisibility,
+    playlistTag: state.playlist.playlistTag
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -46,7 +49,8 @@ const mapDispatchToProps = dispatch => ({
     loginCellphone: (params, successCallback, failCallback, errCallback) => dispatch(loginCellphone(params, successCallback, failCallback, errCallback)),
     registerCellphone: (params, successCallback, failCallback, errCallback) => dispatch(registerCellphone(params, successCallback, failCallback, errCallback)),
     switchAuthModal: visibility => dispatch(switchAuthModal(visibility)),
-    refreshPage: status => dispatch(refreshPage(status))
+    refreshPage: status => dispatch(refreshPage(status)),
+    getPlaylistTag: () => dispatch(getPlaylistTag)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
