@@ -9,4 +9,5 @@ export default {
     "register/cellphone": "register/cellphone",
     "search": "search",
     "search/suggest": "search/suggest",
+    "banner": "banner"
 }

@@ -1,4 +1,4 @@
-import React,{component,Suspense} from "react";
+import React,{Component,Suspense} from "react";
 import {BrowserRouter,Switch,Route} from "react-router-dom";
 import MyHeader from "components/header";
 import routes from "router";
@@ -9,7 +9,7 @@ import {loginRefresh, loginCellphone, switchAuthModal, registerCellphone} from "
 import {refreshPage} from "store/Page";
 import AuthFormModal from "components/auth";
 
-class App extends component {
+class App extends Component {
     componentDidMount() {
         this.props.loginRefresh()
     }

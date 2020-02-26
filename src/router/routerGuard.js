@@ -1,6 +1,6 @@
-import React,{component,lazy} from "react";
+import React,{Component,lazy} from "react";
 
-class RouterGuard extends component {
+class RouterGuard extends Component {
     componentWillMount() {
         
     }
