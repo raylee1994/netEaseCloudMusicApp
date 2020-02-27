@@ -10,5 +10,9 @@ export default {
     "search": "search",
     "search/suggest": "search/suggest",
     "banner": "banner",
-    "playlist/hot": "playlist/hot" //热门歌单分类
+    "playlist/hot": "playlist/hot", //热门歌单分类
+    "personalized": "personalized",  //推荐歌单
+    "personalized/djprogram": "personalized/djprogram", //推荐电台
+    "recommend/resource": "recommend/resource", //获取每日推荐歌单
+    "top/album": "top/album", //新碟上架
 }

@@ -32,7 +32,7 @@ export function createAjax(api, callback, failCallback, errCallback) {
             callback && callback(res)
         }else {
             errorMessage(res.data.msg)
-            failCallback && failCallback()
+            failCallback && failCallback(res)
         }
     }, error => {
         if (error.response) {
@@ -60,5 +60,13 @@ export function createAjaxAction(api, startAction, endAction, errAction) {
                 dispatch(errAction)
             })
         }
+    }
+}
+
+export function countTrasnform(count) {
+    if(count < 10000) {
+        return count
+    }else {
+        return (count/10000).toFixed(1) + '万'
     }
 }
