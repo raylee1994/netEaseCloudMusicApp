@@ -11,7 +11,7 @@ const getPlaylistTag = createAction(GET_PLAYLIST_TAG);
 export const getPlaylistTag = () => dispatch => {
     createAjax(http.get(apisPaths["playlist/hot"], {}), res => {
         const list = [];
-        res.tags.forEach(element => {
+        res.data.tags.forEach(element => {
             list.push(element.playlistTag)
         });
         dispatch(getPlaylistTag(list));

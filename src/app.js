@@ -41,7 +41,7 @@ class App extends Component {
 const mapStateToProps = state => ({
     is_refresh_page: state.is_refresh_page,
     authModalVisibility: state.user.authModalVisibility,
-    playlistTag: state.playlist.playlistTag
+    playlistTag: state.playlist.playlistTag,
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -3,10 +3,12 @@ import {createAjax, countTrasnform} from "common/js/utils";
 import http from "apis/http";
 import apisPaths from "apis/paths";
 import Banner from "components/banner";
+import Slider from "components/slider";
 import styles from "./index.module";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {Icon} from "antd"; 
+import {switchAuthModal} from "store/user/action";
 
 class Home extends Component {
     constructor(props) {
@@ -16,7 +18,9 @@ class Home extends Component {
             personalizedList: [],
             recommendList: [],
             albumList: [],
-            login: false
+            toplist: [],
+            login: false,
+            user: {}
         }
     }
     getBanner() {
@@ -24,7 +28,7 @@ class Home extends Component {
             type: 0
         }), res => {
             var bannerList = []
-            res.banners.forEach(element => {
+            res.data.banners.forEach(element => {
                 if(element.targetType == 10) {
                     bannerList.push({
                         img: element.imageUrl,
@@ -44,9 +48,9 @@ class Home extends Component {
         })
     }
     getPersonalized() {
-        createAjax(http.get("batch?/api/personalized/playlist={'limit':5}&/api/personalized/djprogram={'limit':3}",{}), res => {
+        createAjax(http.get("batch?/api/personalized/playlist={'limit':5}&/api/personalized/djprogram={'limit':3}"), res => {
             const list = [];
-            res["/api/personalized/playlist"].result.forEach((item,index) => {
+            res.data["/api/personalized/playlist"].result.forEach((item,index) => {
                 list.push({
                     id: item.id,
                     type: "/playList",
@@ -55,7 +59,7 @@ class Home extends Component {
                     name: item.name
                 })
             })
-            res["/api/personalized/djprogram"].result.forEach((item,index) => {
+            res.data["/api/personalized/djprogram"].result.forEach((item,index) => {
                 list.splice(3+2*index, 0, {
                     id: item.id,
                     type: "/dj",
@@ -70,10 +74,10 @@ class Home extends Component {
         })
     }
     getRecommendList() {
-        http.get(apisPaths["recommend/resource"], {}).then(res => {
-            if(res.code == 200) {
+        http.get(apisPaths["recommend/resource"]).then(res => {
+            if(res.data.code == 200) {
                 const list = [];
-                for(let i = 0, item = res.recommend[i]; i < 3; i++) {
+                for(let i = 0, item = res.data.recommend[i]; i < 3; i++) {
                     list.push({
                         id: item.id,
                         name: item.name,
@@ -90,13 +94,86 @@ class Home extends Component {
         })
     }
     getAlbumList() {
-
+        http.get(apisPaths["album/newest"]).then(res => {
+            const list = [];
+            res.data.albums.slice(0,10).forEach((item, index) => {
+                list.push({
+                    id: item.id,
+                    title: item.name,
+                    name: item.artist.name,
+                    picUrl: item.picUrl
+                })
+            })
+            this.setState({
+                albumList: list
+            })
+        })
+    }
+    getToplist() {
+        let toplist1 = http.get(apisPaths["top/list"], {idx: 3}).then(res => {
+            if(res.data.code == 200) {
+                Promise.resolve(res.data.playlist)
+            }else {
+                Promise.reject(res.data.msg)
+            }
+        });
+        let toplist2 = http.get(apisPaths["top/list"], {idx: 0}).then(res => {
+            if(res.data.code == 200) {
+                Promise.resolve(res.data.playlist)
+            }else {
+                Promise.reject(res.data.msg)
+            }
+        });
+        let toplist3 = http.get(apisPaths["top/list"], {idx: 2}).then(res => {
+            if(res.data.code == 200) {
+                Promise.resolve(res.data.playlist)
+            }else {
+                Promise.reject(res.data.msg)
+            }
+        });
+        Promise.all([toplist1, toplist2, toplist3]).then(res => {
+            let list  = [];
+            res.forEach((item, index) => {
+                let tracks = []
+                for(let i = 0,track = item.tracks[i]; i < 10; i++) {
+                    tracks.push({
+                        id: track.id,
+                        name: track.name
+                    })
+                }
+                list.push({
+                    name: item.name,
+                    id: item.id,
+                    coverImgUrl: item.coverImgUrl,
+                    tracks
+                })
+            })
+            this.setState({
+                toplist: list
+            })
+        }).catch(err => {
+            errorMessage(err)
+        });
+    }
+    getUserDetail() {
+        http.get(apisPaths["user/detail"], {uid: this.props.uid}).then(res => {
+            this.setState({
+                user: {
+                    sign: res.data.pcSign,
+                    avatarUrl: res.data.profile.avatarUrl
+                }
+            })
+        })
     }
     componentDidMount() {
         this.getBanner();
         this.getSongSheet();
         this.getRecommendList();
         this.getAlbumList();
+        this.getToplist();
+        if(this.props.login == 2) {
+            this.getUserDetail()
+        }
     }
     render() {
         const {playlistTag} = this.props;
@@ -155,7 +232,61 @@ class Home extends Component {
                     </Link>
                 </li>
             )
-        })
+        });
+        const toplist = this.state.toplist.map((item, index) => {
+            const list = item.tracks.map((items, index) => {
+                return (
+                    <li key={items.id}>
+                        <Link to={"/song?id="+items.id}><span className={styles["no"] + (index < 3 ? (" " + styles["no-top"]) : "")}>{index+1}</span>{items.name}</Link>
+                    </li>
+                )
+            });
+            return (
+                <div className={styles["toplist_item"]} key={item.id}>
+                    <div className={styles["top"]}>
+                        <div className={styles["cver"]}>
+                            <Link to={"/toplist?id="+item.id}>
+                                <img className={styles["j-img"]} src={item.coverImgUrl} />
+                            </Link>
+                        </div>
+                        <div className={styles["tit"]}>
+                            <Link to={"/toplist?id="+item.id}>
+                                {item.name}
+                            </Link>
+                            <div className={styles["btn"]}>
+                                <span><Icon type="play-circle" style={{color: "#aaa", fontSize: "12px"}} /></span>
+                                <span><Icon type="file-add" style={{color: "#aaa", fontSize: "12px"}} /></span>
+                            </div>
+                        </div>
+                    </div>
+                    <ul className={styles["list"]}>
+                        {list}
+                    </ul>
+                    <div className={styles["more"]}><Link to={"/toplist?id="+item.id}>查看全部&gt;</Link></div>
+                </div>
+            )
+        });
+        const col = 5;
+        const times = new Array(Math.ceil(this.state.albumList.length / col)).fill(0);
+        const slideList = times.map((item, index) => {
+            return (
+                <ul className="slider_item" key={index}>
+                    {
+                        this.state.albumList.slice(col*index, col*index+col).map((items, indexs) => {
+                            return (
+                                <li key={item.id}>
+                                    <Link to={"/album?id="+items.id}>
+                                        <img src={items.picUrl} />
+                                        <p className="title">{items.title}</p>
+                                        <p className="name">{items.name}</p>
+                                    </Link>
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+            )
+        });
         const day = new Date().getDay();
         switch (day) {
             case 0: 
@@ -197,7 +328,7 @@ class Home extends Component {
                                     <ul className={styles["taglist" + " fl"]}>
                                         {tagList}
                                     </ul>
-                                    <Link to="/playList" className={styles["playlist_more"] + " fr"}>更多</Link>
+                                    <Link to="/playList" className={styles["more"] + " fr"}>更多</Link>
                                 </div>
                                 <div className={styles["personalized_list"]}>
                                     <ul className={styles["home_module_list"] + " clearfix"}>
@@ -233,17 +364,57 @@ class Home extends Component {
                             <div className={styles["album_module"]}>
                                 <div className={styles["home_module_title"] + " clearfix"}>
                                     <span className="font24">新碟上架</span>
-                                    <Link to="/album" className={styles["playlist_more"] + " fr"}>更多</Link>
+                                    <Link to="/album" className={styles["more"] + " fr"}>更多</Link>
                                 </div>
                                 <div className={styles["album_list"]}>
-                                    <ul className={styles["home_module_list"] + " clearfix"}>
-
-                                    </ul>
+                                    <Slider>
+                                        {slideList}
+                                    </Slider>
+                                </div>
+                            </div>
+                            <div className={styles["toplist_module"]}>
+                                <div className={styles["home_module_title"] + " clearfix"}>
+                                    <span className="font24">榜单</span>
+                                    <Link to="/toplist" className={styles["more"] + " fr"}>更多</Link>
+                                </div>
+                                <div className={styles["toplist"] + " clearfix"}>
+                                    {toplist}
                                 </div>
                             </div>
                         </div>
                         <div className={styles["home_right"] + " fr"}>
-
+                            {do{
+                                if(this.props.login != 2) {
+                                    <div className={styles["myinfo"] + " " + styles["myinfo1"]}>
+                                        <p>登录网易云音乐，可以享受无限收藏的乐趣，并且无限同步到手机</p>
+                                        <span onClick={this.props.switchAuthModal}>用户登录</span>
+                                    </div>
+                                }else {
+                                    <div className={styles["myinfo"] + " " + styles["myinfo2"]}>
+                                        <div class="n-myinfo s-bg s-bg-5">
+                                            <div class="f-cb">
+                                                <a href="/user/home?id=2120907510" class="head f-pr">
+                                                    <img src="http://p1.music.126.net/6mHr1rbEQfR6968xHBnGSg==/109951164713767260.jpg?param=80y80" />
+                                                </a>
+                                            </div>
+                                            <div class="info">
+                                                <h4 style="overflow: hidden;">
+                                                    <a id="j-vip-code-to-home" href="/user/home?id=2120907510" class="nm nm-icn f-fs1 f-ib f-thide">netEaseApp2019___</a>
+                                                </h4>
+                                                <p><a href="/user/level" class="u-lv u-icn2 u-icn2-lv">0<i class="right u-icn2 u-icn2-lvright"></i></a></p>
+                                                <div class="btnwrap f-pr">
+                                                    <a data-need-safety="false" data-action="checkin" href="javascript:;" hidefocus="true" class="sign u-btn2 u-btn2-2"><i>签 到</i></a>
+                                                </div>
+                                            </div>
+                                            <ul class="dny s-fc3 f-cb">
+                                                <li class="fst"><a href="/user/event?id=2120907510"><strong id="event_count">0</strong><span>动态</span></a></li>
+                                                <li><a href="/user/follows?id=2120907510"><strong id="follow_count">3</strong><span>关注</span></a></li>
+                                                <li class="lst"><a href="/user/fans?id=2120907510"><strong id="fan_count">0</strong><span>粉丝</span></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                }
+                            }}
                         </div>
                     </div>
                 </div>
@@ -253,7 +424,12 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => ({
-    playlistTag: state.playlist.playlistTag
+    playlistTag: state.playlist.playlistTag,
+    uid: state.user.profile.userId,
+    login: state.user.status
+})
+const mapDispatchToProps = dispatch => ({
+    switchAuthModal: () => dispatch(switchAuthModal(true))
 })
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps,mapDispatchToProps)(Home)

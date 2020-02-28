@@ -37,6 +37,8 @@ class Header extends Component {
         this.state = {
             dataSource: ""
         }
+        this.logout = this.logout.bind(this)
+        this.searchSuggest = this.searchSuggest.bind(this)
     }
     logout() {
         createAjax(http.get(apiPaths["logout"]), () => {

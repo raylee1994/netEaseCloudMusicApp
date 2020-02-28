@@ -3,6 +3,7 @@ export default {
     "login/cellphone": "login/cellphone",
     "login/refresh": "login/refresh",
     "logout": "logout",
+    "user/detail": "user/detail",
     "captcha/sent": "captcha/sent",
     "captcha/verify": "captcha/verify",
     "cellphone/existence/check": "cellphone/existence/check",
@@ -14,5 +15,6 @@ export default {
     "personalized": "personalized",  //推荐歌单
     "personalized/djprogram": "personalized/djprogram", //推荐电台
     "recommend/resource": "recommend/resource", //获取每日推荐歌单
-    "top/album": "top/album", //新碟上架
+    "album/newest": "album/newest", //最新专辑
+    "top/list": "top/list", //排行榜
 }
