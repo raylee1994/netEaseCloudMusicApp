@@ -279,21 +279,21 @@ class Home extends Component {
             const list = item.tracks.map((items, index) => {
                 return (
                     <li key={items.id}>
-                        <Link to={"/song?id="+items.id}><span className={styles["no"] + (index < 3 ? (" " + styles["no-top"]) : "")}>{index+1}</span>{items.name}</Link>
+                        <Link to={"/song?id="+items.id}><span className={styles["no"] + (index < 3 ? (" " + styles["no-top"]) : "")}>{index+1}</span><span className={styles["nm"]}>{items.name}</span></Link>
                     </li>
                 )
             });
             return (
-                <div className={styles["toplist_item"]} key={item.id}>
+                <div className={styles["toplist_item"] + " fl"} key={item.id}>
                     <div className={styles["top"]}>
-                        <div className={styles["cver"]}>
+                        <div className={styles["cver"] + " fl"}>
                             <Link to={"/toplist?id="+item.id}>
-                                <img className={styles["j-img"]} src={item.coverImgUrl} />
+                                <img src={item.coverImgUrl} />
                             </Link>
                         </div>
-                        <div className={styles["tit"]}>
+                        <div className={styles["tit"] + " fl"}>
                             <Link to={"/toplist?id="+item.id}>
-                                {item.name}
+                                <p>{item.name}</p>
                             </Link>
                             <div className={styles["btn"]}>
                                 <span><Icon type="play-circle" style={{color: "#aaa", fontSize: "12px"}} /></span>
