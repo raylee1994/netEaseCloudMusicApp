@@ -35,7 +35,7 @@ export default class Banner extends Component {
                         </React.Fragment>
                     )
                 }
-                <Carousel ref={this.banner} autoplay={this.props.autoplay} dots={this.props.dots}>
+                <Carousel ref={this.banner} afterChange={current => this.props.afterChange(current)} autoplay={this.props.autoplay} dots={this.props.dots}>
                     {carouselList}
                 </Carousel>
             </div>
@@ -48,12 +48,14 @@ Banner.defaultProps = {
     switchBtn: false,
     switchBtnPos: "out",
     dots: true,
-    autoplay: true
+    autoplay: true,
+    afterChange: function(){}
 }
 Banner.propTypes = {
     bannerList: PropTypes.array,
     switchBtn: PropTypes.bool,
     switchBtnPos: PropTypes.oneOf(["in", "out"]),
     dots: PropTypes.bool,
-    autoplay: PropTypes.bool
+    autoplay: PropTypes.bool,
+    afterChange: PropTypes.func
 }

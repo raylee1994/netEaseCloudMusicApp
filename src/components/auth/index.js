@@ -76,10 +76,10 @@ class Auth extends Component {
 		} else if (this.state.status == 2) {
 			return (
 				<div className={style["modalFooter"] + " " + style["clearfix"]}>
-					<div className={style["returnLogin"]} onClick={this.setStatus(1)}>
+					<div className={style["returnLogin"] + " fl"} onClick={this.setStatus(1)}>
 						&lt; 其他登录方式
 					</div>
-					<div className={style["turnRegister"]} onClick={this.setStatus(3)}>
+					<div className={style["turnRegister"] + " fr"} onClick={this.setStatus(3)}>
 						没有账号？免费注册 &gt;
 					</div>
 				</div>
@@ -87,7 +87,7 @@ class Auth extends Component {
 		} else {
 			return (
 				<div className={style["modalFooter"] + " " + style["clearfix"]}>
-					<div className={style["returnLogin"]} onClick={this.setStatus(1)}>
+					<div className={style["returnLogin"] + " fl"} onClick={this.setStatus(1)}>
 						返回登录
 					</div>
 				</div>
@@ -424,7 +424,7 @@ class Auth extends Component {
 				onCancel={this.closeModal}
 			>
 				{this.state.status == 1 && (
-					<div className={style["modal_1"]}>
+					<div className={style["modal_content"]}>
 						<div className={style["modal_1_btngroup"]}>
 							<img src={require("./images/platform.png")} />
 							<Button type="primary" onClick={this.checkPolicy(2)} block>
@@ -460,7 +460,7 @@ class Auth extends Component {
 					</div>
 				)}
 				{this.state.status == 2 && (
-					<div className={style["modal_2"]}>
+					<div className={style["modal_content"]}>
 						<Form onSubmit={this.handleSubmit2}>
 							<div className={style["modal_2_inputgroup"]}>
 								<Form.Item>
@@ -516,7 +516,7 @@ class Auth extends Component {
 					</div>
 				)}
 				{(this.state.status == 3 || this.state.status == 7) && (
-					<div className={style["modal_3"]}>
+					<div className={style["modal_content"]}>
 						<Form onSubmit={this.handleSubmit3}>
 							<div className={style["modal_3_inputgroup"]}>
 								<p>手机号：</p> 
@@ -560,14 +560,14 @@ class Auth extends Component {
 					</div>
 				)}
 				{(this.state.status == 4 || this.state.status == 8) && (
-					<div className={style["modal_4"]}>
+					<div className={style["modal_content"]}>
 						<p>你的手机号：+{this.state.phoneCode} {this.hidePhone(this.state.phone)}</p> 
 						<p>为了安全，我们会给你发送短信验证码</p>
 						<div className={style["modal_4_password"]}>
-							<Input className={style["modal_4_captcha1"]} ref={this.captcha1} maxLength="1" onChange={e => this.nextInput(e, 2)} />
-							<Input className={style["modal_4_captcha2"]} ref={this.captcha2} maxLength="1" onChange={e => this.nextInput(e, 3)} />
-							<Input className={style["modal_4_captcha3"]} ref={this.captcha3} maxLength="1" onChange={e => this.nextInput(e, 4)} />
-							<Input className={style["modal_4_captcha4"]} ref={this.captcha4} maxLength="1" onChange={e => this.nextInput(e)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha1} maxLength="1" onChange={e => this.nextInput(e, 2)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha2} maxLength="1" onChange={e => this.nextInput(e, 3)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha3} maxLength="1" onChange={e => this.nextInput(e, 4)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha4} maxLength="1" onChange={e => this.nextInput(e)} />
 						</div> 
 						<div className={style["modal_4_captcha"] + " clearfix"}>
 							{
@@ -587,7 +587,7 @@ class Auth extends Component {
 					</div>
 				)}
 				{this.state.status == 5 && (
-					<div className={style["modal_5"]}>
+					<div className={style["modal_content"]}>
 						<Form onSubmit={this.handleSubmit5}>
 							<p>取一个名称，让大家记住你</p>
 							<Form.Item>
@@ -609,7 +609,7 @@ class Auth extends Component {
 					</div>
 				)}
 				{this.state.status == 6 && (
-					<div className={style["modal_6"]}>
+					<div className={style["modal_content"]}>
 						<p>改手机号已与云音乐账号 <b>{this.state.username}</b> 绑定，</p> 
 						<p>以后你可以直接用改手机号+密码登录</p>
 						<Button type="primary" onClick={this.refresh} block>

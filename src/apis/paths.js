@@ -3,6 +3,7 @@ export default {
     "login/cellphone": "login/cellphone",
     "login/refresh": "login/refresh",
     "logout": "logout",
+    "daily_signin": "daily_signin",
     "user/detail": "user/detail",
     "captcha/sent": "captcha/sent",
     "captcha/verify": "captcha/verify",
@@ -17,4 +18,5 @@ export default {
     "recommend/resource": "recommend/resource", //获取每日推荐歌单
     "album/newest": "album/newest", //最新专辑
     "top/list": "top/list", //排行榜
+    "artist/list": "artist/list", //歌手分类列表
 }

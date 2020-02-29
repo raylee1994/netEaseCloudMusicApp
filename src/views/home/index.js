@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {createAjax, countTrasnform} from "common/js/utils";
+import {Button, Tooltip} from "antd";
 import http from "apis/http";
 import apisPaths from "apis/paths";
 import Banner from "components/banner";
@@ -15,13 +16,18 @@ class Home extends Component {
         super(props)
         this.state = {
             bannerList: [],
+            bannerBg: {},
             personalizedList: [],
             recommendList: [],
             albumList: [],
             toplist: [],
+            artistList: [],
             login: false,
+            signing: false,
+            tooltipVisible: false,
             user: {}
         }
+        this.sign = this.sign.bind(this)
     }
     getBanner() {
         createAjax(http.get(apisPaths["banner"], {
@@ -157,12 +163,48 @@ class Home extends Component {
     }
     getUserDetail() {
         http.get(apisPaths["user/detail"], {uid: this.props.uid}).then(res => {
+            if(res.data.code == 200) {
+                this.setState({
+                    user: {
+                        sign: res.data.pcSign,
+                        avatarUrl: res.data.profile.avatarUrl,
+                        nickname: res.data.profile.nickname,
+                        level: res.data.level,
+                        eventCount: res.data.profile.eventCount,
+                        follows: res.data.profile.follows,
+                        followeds: res.data.profile.followeds
+                    }
+                })
+            }
+        })
+    }
+    sign() {
+        this.setState({
+            signing: true
+        })
+        http.get(apisPaths["daily_signin"], {type: 1}).then(res => {
             this.setState({
-                user: {
-                    sign: res.data.pcSign,
-                    avatarUrl: res.data.profile.avatarUrl
-                }
+                signing: false,
+                tooltipVisible: true
             })
+            setTimeout(() => {
+                this.setState({
+                    tooltipVisible: false
+                })
+            }, 1000)
+        }, err => {
+            this.setState({
+                signing: false
+            })
+        })
+    }
+    bannerChange(current) {
+        this.setState({
+            bannerBg: {
+                backgroundImage: `url(${this.state.bannerList[current].img}?imageView&blur=40x20)`,
+                backgroundSize: "6000px",
+                backgroundPosition: "center center"
+            }
         })
     }
     componentDidMount() {
@@ -195,7 +237,7 @@ class Home extends Component {
         });
         const personalizedList = this.state.personalizedList.map((item, index) => {
             return (
-                <li key={item.id}>
+                <li key={item.id} className="fl">
                     <Link to={item.type+"?id="+item.id}>
                         <div className={styles["cover"]}>
                             <img src={item.picUrl} />
@@ -276,9 +318,11 @@ class Home extends Component {
                             return (
                                 <li key={item.id}>
                                     <Link to={"/album?id="+items.id}>
-                                        <img src={items.picUrl} />
-                                        <p className="title">{items.title}</p>
-                                        <p className="name">{items.name}</p>
+                                        <div className={styles["cover"]}>
+                                            <img src={items.picUrl} />
+                                        </div>
+                                        <p className={styles["title"]}>{items.title}</p>
+                                        <p className={styles["name"]}>{items.name}</p>
                                     </Link>
                                 </li>
                             )
@@ -314,9 +358,9 @@ class Home extends Component {
         const date = new Date().getDate();
         return (
             <React.Fragment>
-                <div className={styles['banner']}>
+                <div className={styles['banner']} style={this.state.bannerBg}>
                     <div className="main">
-                        <Banner bannerList={this.state.bannerList} />
+                        <Banner bannerList={this.state.bannerList} afterChange={this.bannerChange} />
                     </div>
                 </div>
                 <div className={styles["home_module"]}>
@@ -330,11 +374,9 @@ class Home extends Component {
                                     </ul>
                                     <Link to="/playList" className={styles["more"] + " fr"}>更多</Link>
                                 </div>
-                                <div className={styles["personalized_list"]}>
-                                    <ul className={styles["home_module_list"] + " clearfix"}>
-                                        {personalizedList}
-                                    </ul>
-                                </div>
+                                <ul className={styles["home_module_list"] + " clearfix"}>
+                                    {personalizedList}
+                                </ul>
                             </div>
                             {
                                 this.state.login && (
@@ -342,22 +384,20 @@ class Home extends Component {
                                         <div className={styles["home_module_title"] + " clearfix"}>
                                             <span className="font24">个性化推荐</span>
                                         </div>
-                                        <div className={styles["recommend_list"]}>
-                                            <ul className={styles["home_module_list"] + " clearfix"}>
-                                                <li>
-                                                    <Link to="">
-                                                        <div className={styles["date"] + " " + styles["u-date"] + " " + styles["f-alpha"]}>
-                                                            <span className={styles["head"]}>{day}</span>
-                                                            <span className={styles["bd"]}>{date}</span>
-                                                            <span className={styles["mask"] + " " + styles["f-alpha"]}></span>
-                                                        </div>
-                                                        <div className={styles["name"]}>每日歌曲推荐</div>
-                                                        <div className={styles["desc"]}>根据你的口味生成，<br />每天6:00更新</div>
-                                                    </Link>
-                                                </li>
-                                                {recommendList}
-                                            </ul>
-                                        </div>
+                                        <ul className={styles["home_module_list"] + " clearfix"}>
+                                            <li>
+                                                <Link to="">
+                                                    <div className={styles["date"] + " " + styles["u-date"] + " " + styles["f-alpha"]}>
+                                                        <span className={styles["head"]}>{day}</span>
+                                                        <span className={styles["bd"]}>{date}</span>
+                                                        <span className={styles["mask"]}></span>
+                                                    </div>
+                                                    <div className={styles["name"]}>每日歌曲推荐</div>
+                                                    <div className={styles["desc"]}>根据你的口味生成，<br />每天6:00更新</div>
+                                                </Link>
+                                            </li>
+                                            {recommendList}
+                                        </ul>
                                     </div>
                                 )
                             }
@@ -391,25 +431,27 @@ class Home extends Component {
                                     </div>
                                 }else {
                                     <div className={styles["myinfo"] + " " + styles["myinfo2"]}>
-                                        <div class="n-myinfo s-bg s-bg-5">
-                                            <div class="f-cb">
-                                                <a href="/user/home?id=2120907510" class="head f-pr">
-                                                    <img src="http://p1.music.126.net/6mHr1rbEQfR6968xHBnGSg==/109951164713767260.jpg?param=80y80" />
-                                                </a>
+                                        <div className={styles["n-myinfo"]}>
+                                            <div className={styles["f-cb"]}>
+                                                <Link to={"/user/home?id="+this.this.props.uid}>
+                                                    <img src={this.state.user.avatarUrl} />
+                                                </Link>
                                             </div>
-                                            <div class="info">
-                                                <h4 style="overflow: hidden;">
-                                                    <a id="j-vip-code-to-home" href="/user/home?id=2120907510" class="nm nm-icn f-fs1 f-ib f-thide">netEaseApp2019___</a>
+                                            <div className={styles["info"]}>
+                                                <h4 style={{"overflow": "hidden"}}>
+                                                    <Link to={"/user/home?id="+this.this.props.uid}>{this.state.user.nickname}</Link>
                                                 </h4>
-                                                <p><a href="/user/level" class="u-lv u-icn2 u-icn2-lv">0<i class="right u-icn2 u-icn2-lvright"></i></a></p>
-                                                <div class="btnwrap f-pr">
-                                                    <a data-need-safety="false" data-action="checkin" href="javascript:;" hidefocus="true" class="sign u-btn2 u-btn2-2"><i>签 到</i></a>
+                                                <p><span className={styles["level"]}>Lv. {this.state.user.level}</span></p>
+                                                <div className={styles["btnwrap"]}>
+                                                    <Tooltip title="+2积分" visible={this.state.tooltipVisible} placement="bottom">
+                                                        <Button type="primary" loading={this.state.signing} disabled={this.state.user.sign} onClick={this.sign}>{this.state.user.sign ? "已 签 到" : "签 到"}</Button>
+                                                    </Tooltip>
                                                 </div>
                                             </div>
-                                            <ul class="dny s-fc3 f-cb">
-                                                <li class="fst"><a href="/user/event?id=2120907510"><strong id="event_count">0</strong><span>动态</span></a></li>
-                                                <li><a href="/user/follows?id=2120907510"><strong id="follow_count">3</strong><span>关注</span></a></li>
-                                                <li class="lst"><a href="/user/fans?id=2120907510"><strong id="fan_count">0</strong><span>粉丝</span></a></li>
+                                            <ul className={styles["count"]}>
+                                                <li><strong>{this.state.user.eventCount}</strong><span>动态</span></li>
+                                                <li><strong>{this.state.user.follows}</strong><span>关注</span></li>
+                                                <li><strong>{this.state.user.followeds}</strong><span>粉丝</span></li>
                                             </ul>
                                         </div>
                                     </div>
