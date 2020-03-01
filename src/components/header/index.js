@@ -1,7 +1,7 @@
 import React,{Component} from "react";
 import {Icon,Input,AutoComplete,Menu,Avatar} from 'antd';
-import styles from "./index.less";
-import {Link,NavLink} from "components/header";
+import "./index.less";
+import {Link,NavLink} from "react-router-dom";
 import routes from "router";
 import http from "apis/http";
 import apisPaths from "apis/paths";
@@ -48,21 +48,22 @@ class Header extends Component {
     searchSuggest(e) {
         debounce(function(keywords) {
             createAjax(http.get(apisPaths["search/suggest"], {keywords}), res => {
-                let searchList = <div className={styles["search_title"]}><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002",}}></Link></div>;
+                let searchList = <div className="search_title"><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002",}}></Link></div>;
                 res.data.order.forEach(item => {
+                    let options;
                     switch (item) {
                         case "artists":
-                            const options = res.data.artists.map(item => 
+                            options = res.data.artists.map(item => 
                                 <Option key={item.id} value={item.name}>
                                     <Link to={{pathname: "/artist", search: "?id="+item.id}}>
                                         {filterKeyword(item.name)}
                                     </Link>
                                 </Option>
                             )
-                            searchList += <OptGroup key="artists" label={<div className={styles.label}>歌手</div>}>{options}</OptGroup>
+                            searchList += <OptGroup key="artists" label={<div className="label">歌手</div>}>{options}</OptGroup>
                             break;
                         case "songs":
-                            const options = res.data.songs.map(item => {
+                            options = res.data.songs.map(item => {
                                 <Option key={item.id} value={item.name}>
                                     <Link to={{pathname: "/song", search: "?id="+item.id}}>
                                         {filterKeyword(item.name)}-
@@ -74,27 +75,27 @@ class Header extends Component {
                                     </Link>
                                 </Option>
                             })
-                            searchList += <OptGroup key="songs" label={<div className={styles.label}>单曲</div>}>{options}</OptGroup>
+                            searchList += <OptGroup key="songs" label={<div className="label">单曲</div>}>{options}</OptGroup>
                             break;
                         case "albums":
-                            const options = res.data.albums.map(item => 
+                            options = res.data.albums.map(item => 
                                 <Option key={item.id} value={item.name}>
                                     <Link to={{pathname: "/album", search: "?id="+item.id}}>
                                         {filterKeyword(item.name)}-{filterKeyword(item.artist.name)}
                                     </Link>
                                 </Option>
                             )
-                            searchList += <OptGroup key="albums" label={<div className={styles.label}>专辑</div>}>{options}</OptGroup>
+                            searchList += <OptGroup key="albums" label={<div className="label">专辑</div>}>{options}</OptGroup>
                             break;
                         case "mvs":
-                            const options = res.data.mvs.map(item => 
+                            options = res.data.mvs.map(item => 
                                 <Option key={item.id} value={item.name}>
                                     <Link to={{pathname: "/mv", search: "?id="+item.id}}>
                                         MV:{filterKeyword(item.name)}-{filterKeyword(item.artistName)}
                                     </Link>
                                 </Option>
                             )
-                            searchList += <OptGroup key="mvs" label={<div className={styles.label}>视频</div>}>{options}</OptGroup>
+                            searchList += <OptGroup key="mvs" label={<div className="label">视频</div>}>{options}</OptGroup>
                             break;
                         default:
                             return
@@ -108,19 +109,19 @@ class Header extends Component {
     }
     render() {
         return (
-            <div className={styles.header}>
+            <div className="header">
                 <div className="wrap clearfix">
-                    <NavLink to="/" className={styles.logo + " fl"}><img src={require("./images/logo.png")} /></NavLink>
+                    <NavLink to="/" className="logo fl"><img src={require("./images/logo.png").default} /></NavLink>
                     {
-                        routes.forEach(element => <NavLink to={element.path} className={styles.navLink + " fl"} activiClassName={element.activiClassName}>{element.name}</NavLink>)
+                        routes.map(element => <NavLink key={element.path} to={element.path} className="navLink fl" activeClassName={element.activeClassName}>{element.name}</NavLink>)
                     }
-                    <div className={styles.search_wrap + " fr"}>
+                    <div className="search_wrap fr">
                         <AutoComplete dataSource={this.state.dataSource} placeholder="音乐/视频/电台/用户">
-                            <Input className={styles.search_input} onChange={this.searchSuggest} suffix={<Icon type="search" className={styles.search_icon} />} />
+                            <Input className="search_input" onChange={this.searchSuggest} suffix={<Icon type="search" className="search_icon" />} />
                         </AutoComplete>
                     </div>
                     {
-                        this.props.userStatus == 3 && <a className={styles.login + " fr"} onclick={this.props.switchAuthModal(true)}>登录</a>
+                        this.props.userStatus == 3 && <a className="login fr" onclick={this.props.switchAuthModal(true)}>登录</a>
                     }
                     {
                         this.props.userStatus == 2 && 

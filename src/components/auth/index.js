@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Modal, Button, Checkbox, Input, Select, Form } from "antd";
-import styles from "./index.module";
+import style from "./index.module";
 import countryCode from "common/js/country-code";
 import http from "apis/http";
 import apisPaths from "apis/paths";
@@ -37,7 +37,6 @@ class Auth extends Component {
 		this.setPhone = this.setPhone.bind(this);
 		this.setPassword = this.setPassword.bind(this);
 		this.showPassWordTips = this.showPassWordTips.bind(this);
-		this.logIn = this.logIn.bind(this);
 		this.checkPhone3 = this.checkPhone3.bind(this);
 		this.checkPassword3 = this.checkPassword3.bind(this);
 		this.register = this.register.bind(this);
@@ -420,7 +419,7 @@ class Auth extends Component {
 				maskStyle={{
 					background: "none"
 				}}
-				wrapClassName={styles.authModal}
+				wrapClassName={style.authModal}
 				onCancel={this.closeModal}
 			>
 				{this.state.status == 1 && (

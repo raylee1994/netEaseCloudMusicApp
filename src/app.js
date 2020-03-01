@@ -2,7 +2,7 @@ import React,{Component,Suspense} from "react";
 import {BrowserRouter,Switch,Route} from "react-router-dom";
 import MyHeader from "components/header";
 import routes from "router";
-import RouterGuard from "router/roterGuard";
+import RouterGuard from "router/routerGuard";
 import Loading from "components/loading";
 import {connect} from "react-redux";
 import {loginRefresh, loginCellphone, switchAuthModal, registerCellphone} from "./store/User/action";
@@ -18,13 +18,13 @@ class App extends Component {
     render() {
         return (
             <React.Fragment>
-                <MyHeader></MyHeader>
-                <AuthFormModal authModalVisibility={this.props.authModalVisibility} loginCellphone={this.props.loginCellphone} switchAuthModal={this.props.switchAuthModal} is_refresh_page={this.props.is_refresh_page} refreshPage={this.props.refreshPage}></AuthFormModal>
                 <BrowserRouter>
+                    <MyHeader></MyHeader>
+                    <AuthFormModal authModalVisibility={this.props.authModalVisibility} loginCellphone={this.props.loginCellphone} switchAuthModal={this.props.switchAuthModal} is_refresh_page={this.props.is_refresh_page} refreshPage={this.props.refreshPage}></AuthFormModal>
                     <Suspense fallback={<Loading></Loading>}>
                         <Switch>
                             {
-                                routes.forEach((element, index) => {
+                                routes.map((element, index) => {
                                     return (
                                         <Route key={index} path={element.path} exact={element.exact} render={() => <RouterGuard key={this.props.is_refresh_page} component={element.component}></RouterGuard>}></Route>
                                     )
@@ -50,7 +50,7 @@ const mapDispatchToProps = dispatch => ({
     registerCellphone: (params, successCallback, failCallback, errCallback) => dispatch(registerCellphone(params, successCallback, failCallback, errCallback)),
     switchAuthModal: visibility => dispatch(switchAuthModal(visibility)),
     refreshPage: status => dispatch(refreshPage(status)),
-    getPlaylistTag: () => dispatch(getPlaylistTag)
+    getPlaylistTag: () => dispatch(getPlaylistTag())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

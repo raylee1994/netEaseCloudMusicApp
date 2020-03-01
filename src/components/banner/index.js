@@ -18,11 +18,11 @@ export default class Banner extends Component {
     render() {
         const prevStyle = {left: this.props.switchBtnPos == "in" ? "20px" : "-20px"};
         const nextStyle = {right: this.props.switchBtnPos == "in" ? "20px" : "-20px"};
-        const carouselList = this.props.bannerList.map((item) => {
+        const carouselList = this.props.bannerList.map((item,index) => {
             if(!item.to) {
-                return <Link to={() => {}}><img className="banner_img" src={item.img} /></Link>
+                return <Link key={index} to={() => {}}><img className="banner_img" src={item.img} /></Link>
             }else {
-                return <Link to={item.to}><img className="banner_img" src={item.img} /></Link>
+                return <Link key={index} to={item.to}><img className="banner_img" src={item.img} /></Link>
             }
         })
         return (

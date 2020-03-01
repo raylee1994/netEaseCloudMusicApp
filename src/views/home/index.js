@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {createAjax, countTrasnform} from "common/js/utils";
+import {createAjax, countTrasnform, errorMessage} from "common/js/utils";
 import {Button, Tooltip} from "antd";
 import http from "apis/http";
 import apisPaths from "apis/paths";
@@ -16,6 +16,7 @@ class Home extends Component {
         super(props)
         this.state = {
             bannerList: [],
+            backgroundImageList: [],
             bannerBg: {},
             personalizedList: [],
             recommendList: [],
@@ -28,12 +29,14 @@ class Home extends Component {
             user: {}
         }
         this.sign = this.sign.bind(this)
+        this.bannerChange = this.bannerChange.bind(this)
     }
     getBanner() {
         createAjax(http.get(apisPaths["banner"], {
             type: 0
         }), res => {
             var bannerList = []
+            var backgroundImageList = []
             res.data.banners.forEach(element => {
                 if(element.targetType == 10) {
                     bannerList.push({
@@ -47,9 +50,11 @@ class Home extends Component {
                         to: "/song?id="+element.targetId
                     })
                 }
+                backgroundImageList.push(element.imageUrl+"?imageView&blur=40x20")
             });
             this.setState({
-                bannerList
+                bannerList,
+                backgroundImageList
             })
         })
     }
@@ -118,23 +123,23 @@ class Home extends Component {
     getToplist() {
         let toplist1 = http.get(apisPaths["top/list"], {idx: 3}).then(res => {
             if(res.data.code == 200) {
-                Promise.resolve(res.data.playlist)
+                return Promise.resolve(res.data.playlist)
             }else {
-                Promise.reject(res.data.msg)
+                return Promise.reject(res.data.msg)
             }
         });
         let toplist2 = http.get(apisPaths["top/list"], {idx: 0}).then(res => {
             if(res.data.code == 200) {
-                Promise.resolve(res.data.playlist)
+                return Promise.resolve(res.data.playlist)
             }else {
-                Promise.reject(res.data.msg)
+                return Promise.reject(res.data.msg)
             }
         });
         let toplist3 = http.get(apisPaths["top/list"], {idx: 2}).then(res => {
             if(res.data.code == 200) {
-                Promise.resolve(res.data.playlist)
+                return Promise.resolve(res.data.playlist)
             }else {
-                Promise.reject(res.data.msg)
+                return Promise.reject(res.data.msg)
             }
         });
         Promise.all([toplist1, toplist2, toplist3]).then(res => {
@@ -201,7 +206,7 @@ class Home extends Component {
     bannerChange(current) {
         this.setState({
             bannerBg: {
-                backgroundImage: `url(${this.state.bannerList[current].img}?imageView&blur=40x20)`,
+                backgroundImage: `url(${this.state.backgroundImageList[current]})`,
                 backgroundSize: "6000px",
                 backgroundPosition: "center center"
             }
@@ -209,7 +214,7 @@ class Home extends Component {
     }
     componentDidMount() {
         this.getBanner();
-        this.getSongSheet();
+        this.getPersonalized();
         this.getRecommendList();
         this.getAlbumList();
         this.getToplist();
@@ -331,8 +336,9 @@ class Home extends Component {
                 </ul>
             )
         });
-        const day = new Date().getDay();
-        switch (day) {
+        const days = new Date().getDay();
+        let day;
+        switch (days) {
             case 0: 
                 day = "星期天"
                 break;
@@ -431,29 +437,27 @@ class Home extends Component {
                                     </div>
                                 }else {
                                     <div className={styles["myinfo"] + " " + styles["myinfo2"]}>
-                                        <div className={styles["n-myinfo"]}>
-                                            <div className={styles["f-cb"]}>
-                                                <Link to={"/user/home?id="+this.this.props.uid}>
-                                                    <img src={this.state.user.avatarUrl} />
-                                                </Link>
-                                            </div>
-                                            <div className={styles["info"]}>
-                                                <h4 style={{"overflow": "hidden"}}>
-                                                    <Link to={"/user/home?id="+this.this.props.uid}>{this.state.user.nickname}</Link>
-                                                </h4>
-                                                <p><span className={styles["level"]}>Lv. {this.state.user.level}</span></p>
-                                                <div className={styles["btnwrap"]}>
-                                                    <Tooltip title="+2积分" visible={this.state.tooltipVisible} placement="bottom">
-                                                        <Button type="primary" loading={this.state.signing} disabled={this.state.user.sign} onClick={this.sign}>{this.state.user.sign ? "已 签 到" : "签 到"}</Button>
-                                                    </Tooltip>
-                                                </div>
-                                            </div>
-                                            <ul className={styles["count"]}>
-                                                <li><strong>{this.state.user.eventCount}</strong><span>动态</span></li>
-                                                <li><strong>{this.state.user.follows}</strong><span>关注</span></li>
-                                                <li><strong>{this.state.user.followeds}</strong><span>粉丝</span></li>
-                                            </ul>
+                                        <div className={styles["f-cb"]}>
+                                            <Link to={"/user/home?id="+this.this.props.uid}>
+                                                <img src={this.state.user.avatarUrl} />
+                                            </Link>
                                         </div>
+                                        <div className={styles["info"]}>
+                                            <h4 style={{"overflow": "hidden"}}>
+                                                <Link to={"/user/home?id="+this.this.props.uid}>{this.state.user.nickname}</Link>
+                                            </h4>
+                                            <p><span className={styles["level"]}>Lv. {this.state.user.level}</span></p>
+                                            <div className={styles["btnwrap"]}>
+                                                <Tooltip title="+2积分" visible={this.state.tooltipVisible} placement="bottom">
+                                                    <Button type="primary" loading={this.state.signing} disabled={this.state.user.sign} onClick={this.sign}>{this.state.user.sign ? "已 签 到" : "签 到"}</Button>
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+                                        <ul className={styles["count"]}>
+                                            <li><strong>{this.state.user.eventCount}</strong><span>动态</span></li>
+                                            <li><strong>{this.state.user.follows}</strong><span>关注</span></li>
+                                            <li><strong>{this.state.user.followeds}</strong><span>粉丝</span></li>
+                                        </ul>
                                     </div>
                                 }
                             }}

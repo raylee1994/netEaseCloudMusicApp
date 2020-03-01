@@ -1,258 +1,353 @@
-.home_module{
-    .home_left{
-        width: 730px;
-        .home_module_title{
+.home_module {
+  .home_left {
+    width: 730px;
+    .home_module_title {
+      height: 33px;
+      padding: 0 10px;
+      border-bottom: 2px solid #c10d0c;
+    }
+    .home_module_list {
+      display: table;
+      line-height: 0;
+      margin: 20px 0 0 -42px;
+      margin-bottom: 4px;
+      li {
+        display: table-cell;
+        width: 140px;
+        height: 204px;
+        overflow: hidden;
+        padding: 0 0 30px 50px;
+        padding-left: 42px;
+        line-height: 1.4;
+        .cover {
+          width: 140px;
+          height: 140px;
+          position: relative;
+          display: block;
+          img {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
+          .count {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 27px;
+            color: #ccc;
+          }
+        }
+        .name {
+          margin: 8px 0 3px;
+          .tag {
+            width: 35px;
+            height: 15px;
+            line-height: 15px;
+            text-align: center;
+            margin-right: 3px;
+            background: red;
+            color: #fff;
+          }
+        }
+        .date {
+          position: relative;
+          display: block;
+          width: 140px;
+          height: 140px;
+          background: url(https://s2.music.126.net/style/web2/img/date.png?332e4e5516c6a9233a55c13900f62201)
+            no-repeat 0 9999px;
+          background-position: 0 0;
+          .head {
+            display: block;
             height: 33px;
-            padding: 0 10px;
-            border-bottom: 2px solid #C10D0C;
+            line-height: 33px;
+            color: #fed9d9;
+            font-size: 14px;
+            text-shadow: 0 -1px #962626;
+            text-align: center;
+          }
+          .bd {
+            display: block;
+            line-height: 102px;
+            text-align: center;
+            font-size: 94px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            color: #202020;
+          }
+          .mask {
+            position: absolute;
+            top: 33px;
+            left: 0;
+            width: 142px;
+            height: 107px;
+            background: url(https://s2.music.126.net/style/web2/img/date.png?332e4e5516c6a9233a55c13900f62201)
+              no-repeat 0 9999px;
+            background-position: 0 -150px;
+          }
         }
-        .home_module_list{
-            display: table;
-            line-height: 0;
-            margin: 20px 0 0 -42px;
-            margin-bottom: 4px;
-            li{
-                display: table-cell;
-                width: 140px;
-                height: 204px;
-                overflow: hidden;
-                padding: 0 0 30px 50px;
-                padding-left: 42px;
-                line-height: 1.4;
-                .cover{
-                    width: 140px;
-                    height: 140px;
-                    position: relative;
-                    display: block;
-                    img{
-                        display: block;
-                        width: 100%;
-                        height: 100%;
-                    }
-                    .count{
-                        position: absolute;
-                        bottom: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 27px;
-                        color: #ccc;
-                    }
-                }
-                .name{
-                    margin: 8px 0 3px;
-                    .tag{
-                        width: 35px;
-                        height: 15px;
-                        line-height: 15px;
-                        text-align: center;
-                        margin-right: 3px;
-                        background: red;
-                        color: #fff;   
-                    }
-                }
-                .date{
-                    position: relative;
-                    display: block;
-                    width: 140px;
-                    height: 140px;
-                    background: url(https://s2.music.126.net/style/web2/img/date.png?332e4e5516c6a9233a55c13900f62201) no-repeat 0 9999px;
-                    background-position: 0 0;
-                    .head {
-                        display: block;
-                        height: 33px;
-                        line-height: 33px;
-                        color: #fed9d9;
-                        font-size: 14px;
-                        text-shadow: 0 -1px #962626;
-                        text-align: center;
-                    }
-                    .bd {
-                        display: block;
-                        line-height: 102px;
-                        text-align: center;
-                        font-size: 94px;
-                        font-family: Arial, Helvetica, sans-serif;
-                        font-weight: bold;
-                        color: #202020;
-                    }
-                    .mask {
-                        position: absolute;
-                        top: 33px;
-                        left: 0;
-                        width: 142px;
-                        height: 107px;
-                        background: url(https://s2.music.126.net/style/web2/img/date.png?332e4e5516c6a9233a55c13900f62201) no-repeat 0 9999px;
-                        background-position: 0 -150px;
-                    }
-                }
-                .name{
-                    margin: 8px 0 3px;
-                }
-                .desc{
-                    margin-top: 3px;
-                    position: relative;
-                    z-index: 2;
-                    color: #999;
-                }
-            }
+        .name {
+          margin: 8px 0 3px;
         }
-        .personalized_module{
-            .taglist{
-                margin: 7px 0 0 20px;
-            }
-            .more{
-                margin-top: 9px;
-            }
+        .desc {
+          margin-top: 3px;
+          position: relative;
+          z-index: 2;
+          color: #999;
         }
-        .recommend_module{
-
-        }
-        .album_module{
-            .album_list{
-                position: relative;
-                height: 186px;
-                margin: 20px 0 37px;
-                border: 1px solid #d3d3d3;
-                .slider{
-                    height: 184px;
-                    padding-left: 16px;
-                    background: #f5f5f5;
-                    border: 1px solid #fff;
-                    .prev,.next{
-                        position: absolute;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        width: 17px;
-                        height: 17px;
-                    }
-                    .prev{
-                        left: 4px;
-                    }
-                    .next{
-                        right: 4px;
-                    }
-                    .ant-carousel{
-                        width: 645px;
-                        height: 180px;
-                        .slider_item{
-                            li{
-                                float: left;
-                                width: 118px;
-                                height: 150px;
-                                margin-left: 11px;
-                                background: url(https://s2.music.126.net/style/web2/img/index/index.png?9a15f602843ea00a6a00bb79842ea521) no-repeat 0 9999px;
-                                background-position: -260px 100px;
-                                .cover{
-                                    margin-bottom: 7px;
-                                    width: 100px;
-                                    height: 100px;
-                                    img{
-                                        display: block;
-                                        width: 100%;
-                                        height: 100%;
-                                    }
-                                }
-                                .title{
-                                    width: 90%;
-                                    line-height: 18px;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                    white-space: nowrap;
-                                    word-wrap: normal;
-                                    color: #000;
-                                }
-                                .name{
-                                    width: 90%;
-                                    line-height: 18px;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                    white-space: nowrap;
-                                    word-wrap: normal;
-                                    color: #666;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        .toplist_module{
-            height: 472px;
-            margin-top: 20px;
-            padding-left: 1px;
-            .toplist_item{
-                width: 230px;
-                .top{
-                    height: 100px;
-                    padding: 20px 0 0 19px;
-                    .cver{
-                        width: 80px;
-                        height: 80px;
-                        img {
-                            display: block;
-                            width: 100%;
-                            height: 100%;
-                        }
-                    }
-                    .tit{
-                        width: 116px;
-                        margin: 6px 0 0 10px;
-                        a p{
-                            width: 100%;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            white-space: nowrap;
-                            word-wrap: normal; 
-                        }
-                        .btn{
-                            margin-top: 10px;
-                            span{
-                                display: block;
-                                float: left;
-                                width: 22px;
-                                height: 22px;
-                                margin-right: 10px;
-                            }
-                        }
-                    }
-                }
-                .list{
-                    height: 319px;
-                    margin-left: 50px;
-                    line-height: 32px;
-                    li{
-                        height: 32px;
-                        .no{
-                            float: left;
-                            position: relative;
-                            width: 35px;
-                            height: 32px;
-                            margin-left: -35px;
-                            text-align: center;
-                            color: #666;
-                            font-size: 16px;
-                            &.no-top {
-                                color: #c10d0c;
-                            }
-                        }
-                        .nm {
-                            float: left;
-                            width: 170px;
-                            height: 32px;
-                        }
-                    }
-                }
-                .more {
-                    clear: both;
-                    height: 32px;
-                    margin-right: 32px;
-                    text-align: right;
-                    line-height: 32px;
-                }
-            }
-        }
+      }
     }
-    .home_right{
-        width: 250px;
+    .personalized_module {
+      .taglist {
+        margin: 7px 0 0 20px;
+      }
+      .more {
+        margin-top: 9px;
+      }
     }
+    .recommend_module {
+    }
+    .album_module {
+      .album_list {
+        position: relative;
+        height: 186px;
+        margin: 20px 0 37px;
+        border: 1px solid #d3d3d3;
+        .slider {
+          height: 184px;
+          padding-left: 16px;
+          background: #f5f5f5;
+          border: 1px solid #fff;
+          .prev,
+          .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 17px;
+            height: 17px;
+          }
+          .prev {
+            left: 4px;
+          }
+          .next {
+            right: 4px;
+          }
+          .ant-carousel {
+            width: 645px;
+            height: 180px;
+            .slider_item {
+              li {
+                float: left;
+                width: 118px;
+                height: 150px;
+                margin-left: 11px;
+                background: url(https://s2.music.126.net/style/web2/img/index/index.png?9a15f602843ea00a6a00bb79842ea521)
+                  no-repeat 0 9999px;
+                background-position: -260px 100px;
+                .cover {
+                  margin-bottom: 7px;
+                  width: 100px;
+                  height: 100px;
+                  img {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+                .title {
+                  width: 90%;
+                  line-height: 18px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  word-wrap: normal;
+                  color: #000;
+                }
+                .name {
+                  width: 90%;
+                  line-height: 18px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  word-wrap: normal;
+                  color: #666;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .toplist_module {
+      height: 472px;
+      margin-top: 20px;
+      padding-left: 1px;
+      .toplist_item {
+        width: 230px;
+        .top {
+          height: 100px;
+          padding: 20px 0 0 19px;
+          .cver {
+            width: 80px;
+            height: 80px;
+            img {
+              display: block;
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .tit {
+            width: 116px;
+            margin: 6px 0 0 10px;
+            a p {
+              width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              word-wrap: normal;
+            }
+            .btn {
+              margin-top: 10px;
+              span {
+                display: block;
+                float: left;
+                width: 22px;
+                height: 22px;
+                margin-right: 10px;
+              }
+            }
+          }
+        }
+        .list {
+          height: 319px;
+          margin-left: 50px;
+          line-height: 32px;
+          li {
+            height: 32px;
+            .no {
+              float: left;
+              position: relative;
+              width: 35px;
+              height: 32px;
+              margin-left: -35px;
+              text-align: center;
+              color: #666;
+              font-size: 16px;
+              &.no-top {
+                color: #c10d0c;
+              }
+            }
+            .nm {
+              float: left;
+              width: 170px;
+              height: 32px;
+            }
+          }
+        }
+        .more {
+          clear: both;
+          height: 32px;
+          margin-right: 32px;
+          text-align: right;
+          line-height: 32px;
+        }
+      }
+    }
+  }
+  .home_right {
+    width: 250px;
+    .myinfo {
+      height: 165px;
+      padding-top: 20px;
+      &.myinfo1 {
+        height: 126px;
+        padding-top: 0;
+        p {
+          width: 205px;
+          margin: 0 auto;
+          padding: 16px 0;
+          line-height: 22px;
+          color: #666;
+        }
+        span {
+          display: block;
+          margin: 0 auto;
+          width: 100px;
+          height: 31px;
+          line-height: 31px;
+          text-align: center;
+          color: #fff;
+          text-shadow: 0 1px 0 #8a060b;
+        }
+      }
+      &.myinfo2 {
+        .f-cb {
+          a {
+            float: left;
+            width: 80px;
+            height: 80px;
+            margin-left: 20px;
+            padding: 2px;
+            background: #fff;
+            border: 1px solid #dadada;
+            img {
+              display: block;
+              width: 80px;
+              height: 80px;
+            }
+          }
+        }
+        .info {
+          float: left;
+          width: 115px;
+          margin-left: 18px;
+          padding-top: 3px;
+          h4 a {
+            width: auto;
+            max-width: 100%;
+            vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-wrap: normal;
+          }
+          p {
+            width: 100%;
+            margin-top: 5px;
+            span {
+              display: inline-block;
+              height: 17px;
+              overflow: hidden;
+              padding-left: 25px;
+              line-height: 18px;
+              color: #999;
+              font-weight: bold;
+              font-style: italic;
+            }
+          }
+          .btnwrap {
+            margin-top: 15px;
+          }
+        }
+        .count {
+          margin: 22px 0 0 20px;
+          li {
+            float: left;
+            height: 40px;
+            padding: 0 18px;
+            border-right: 1px solid #e4e4e4;
+            strong {
+              display: block;
+              font-size: 20px;
+              font-weight: normal;
+            }
+            span {
+              margin-left: 2px;
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -37,7 +37,8 @@ var rules = [
         loader: "url-loader",
         options: {
             name: "images/[name].[hash:8].[ext]",
-            limit: 8192
+            limit: 8192,
+            esModules: false
         }
     },
     {

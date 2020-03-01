@@ -2,18 +2,25 @@ import "babel-polyfill";
 import React from "react";
 import ReactDOM from 'react-dom';
 import {AppContainer} from "react-hot-loader";
-import {App} from "./app";
+import ReactApp from "./main";
 import "common/css/normalize";
-import {Provider} from "react-redux";
-import store from "./store";
 
 const isdev = process.env.NODE_ENV == "development";
 
-ReactDOM.render(<AppContainer><Provider store={store}><App /></Provider></AppContainer>, document.getElementById("app"));
+const render = Component => {
+    ReactDOM.render(
+        <AppContainer>
+            <Component />
+        </AppContainer>,
+        document.getElementById("app")
+    );
+}
+
+render(ReactApp);
 
 if(isdev && module.hot){
-    module.hot.accept("./app.js", () => {
-        const nextApp = require("./app.js").default;
+    module.hot.accept("./main.js", () => {
+        const nextApp = require("./main.js").default;
         render(nextApp);
     });
 }
