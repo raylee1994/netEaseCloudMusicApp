@@ -8,6 +8,8 @@ export default class Banner extends Component {
     constructor(props) {
         super(props)
         this.banner = React.createRef()
+        this.prev = this.prev.bind(this)
+        this.next = this.next.bind(this)
     }
     prev() {
         this.banner.current.prev()
@@ -16,8 +18,8 @@ export default class Banner extends Component {
         this.banner.current.next()
     }
     render() {
-        const prevStyle = {left: this.props.switchBtnPos == "in" ? "20px" : "-20px"};
-        const nextStyle = {right: this.props.switchBtnPos == "in" ? "20px" : "-20px"};
+        const prevStyle = {left: this.props.switchBtnPos == "in" ? "48px" : "-48px"};
+        const nextStyle = {right: this.props.switchBtnPos == "in" ? "48px" : "-48px"};
         const carouselList = this.props.bannerList.map((item,index) => {
             if(!item.to) {
                 return <Link key={index} to={() => {}} className="banner_link"><img className="banner_img" src={item.img} /></Link>
@@ -45,7 +47,7 @@ export default class Banner extends Component {
 
 Banner.defaultProps = {
     bannerList: [],
-    switchBtn: false,
+    switchBtn: true,
     switchBtnPos: "out",
     dots: true,
     autoplay: false,

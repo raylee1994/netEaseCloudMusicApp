@@ -7,6 +7,8 @@ export default class Slider extends Component {
     constructor(props) {
         super(props)
         this.slider = React.createRef()
+        this.prev = this.prev.bind(this)
+        this.next = this.next.bind(this)
     }
     prev() {
         this.slider.current.prev()
@@ -20,8 +22,8 @@ export default class Slider extends Component {
                 {
                     this.props.switchBtn && (
                         <React.Fragment>
-                            <Icon type="left" onClick={this.prev} className="prev" style={prevStyle} />
-                            <Icon type="right" onClick={this.next} className="next" style={nextStyle} />
+                            <Icon type="left" onClick={this.prev} className="prev"/>
+                            <Icon type="right" onClick={this.next} className="next"/>
                         </React.Fragment>
                     )
                 }
@@ -34,7 +36,7 @@ export default class Slider extends Component {
 }
 
 Slider.defaultProps = {
-    switchBtn: false,
+    switchBtn: true,
     dots: false,
     autoplay: false
 }

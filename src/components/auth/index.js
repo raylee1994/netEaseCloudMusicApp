@@ -44,6 +44,7 @@ class Auth extends Component {
 		this.handleSubmit2 = this.handleSubmit2.bind(this);
 		this.handleSubmit3 = this.handleSubmit3.bind(this);
 		this.handleSubmit5 = this.handleSubmit5.bind(this);
+		this.closeModal = this.closeModal.bind(this);
 		this.interval = null;
 	}
 	setStatus(status) {
@@ -74,7 +75,7 @@ class Auth extends Component {
 			return null;
 		} else if (this.state.status == 2) {
 			return (
-				<div className={style["modalFooter"] + " " + style["clearfix"]}>
+				<div className={style["modalFooter"] + " clearfix"}>
 					<div className={style["returnLogin"] + " fl"} onClick={this.setStatus(1)}>
 						&lt; 其他登录方式
 					</div>
@@ -399,6 +400,9 @@ class Auth extends Component {
 		}
 		return null
 	}
+	componentDidMount() {
+		console.log(this.state.status)
+	}
 	render() {
 		const InputGroup = Input.Group;
 		const { Option } = Select;
@@ -425,11 +429,11 @@ class Auth extends Component {
 				{this.state.status == 1 && (
 					<div className={style["modal_content"]}>
 						<div className={style["modal_1_btngroup"]}>
-							<img src={require("./images/platform.png")} />
-							<Button type="primary" onClick={this.checkPolicy(2)} block>
+							<img src={require("./images/platform.png").default} />
+							<Button type="primary" style={{margin: "10px 0"}} onClick={this.checkPolicy(2)} block>
 								手机号登录
 							</Button>
-							<Button type="default" onClick={this.setStatus(3)} block>
+							<Button type="default" style={{margin: "10px 0"}} onClick={this.setStatus(3)} block>
 								注册
 							</Button>
 						</div>
@@ -478,10 +482,8 @@ class Auth extends Component {
 												}]
 											})(<Input placeholder="请输入手机号" />)
 										}
-										<Input placeholder="请输入手机号" onChange={this.setPhone} />
 									</InputGroup>
 								</Form.Item>
-								<br />
 								<Form.Item>
 									{
 										getFieldDecorator("password", {
@@ -505,7 +507,6 @@ class Auth extends Component {
 									</a>
 								</div>
 							</div>
-							<br />
 							<Form.Item>
 								<Button type="primary" htmlType="submit" loading={this.state.loading} block>
 									登录

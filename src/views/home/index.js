@@ -153,7 +153,8 @@ class Home extends Component {
             let list  = [];
             res.forEach((item, index) => {
                 let tracks = []
-                for(let i = 0,track = item.tracks[i]; i < 10; i++) {
+                for(let i = 0; i < 10; i++) {
+                    var track = item.tracks[i]
                     tracks.push({
                         id: track.id,
                         name: track.name
@@ -254,7 +255,7 @@ class Home extends Component {
                         <div className={styles["cover"]}>
                             <img src={item.picUrl} />
                             <div className={styles["count"]}>
-                                <span className="fl" style={{color: '#ccc'}}><Icon type="customer-service" style={{ fontSize: '12px' }} />{item.count}</span>
+                                <span className="fl" style={{color: '#ccc'}}><Icon type="customer-service" style={{ fontSize: '12px', marginRight: "5px" }} />{item.count}</span>
                                 <span className="fr" style={{color: '#ccc'}}><Icon type="play-circle" style={{ fontSize: '12px' }} /></span>
                             </div>
                         </div>
@@ -291,7 +292,10 @@ class Home extends Component {
             const list = item.tracks.map((items, index) => {
                 return (
                     <li key={index}>
-                        <Link to={"/song?id="+items.id}><span className={styles["no"] + (index < 3 ? (" " + styles["no-top"]) : "")}>{index+1}</span><span className={styles["nm"]}>{items.name}</span></Link>
+                            <span className={styles["no"] + (index < 3 ? (" " + styles["no-top"]) : "")}>{index+1}</span>
+                            <Link to={"/song?id="+items.id}><span className={styles["nm"]}>{items.name}</span>
+                            </Link>
+                            <span className={styles["oper"]}><Icon type="play-circle" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /><Icon type="plus" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /><Icon type="customer-service" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /></span>
                     </li>
                 )
             });
@@ -308,8 +312,8 @@ class Home extends Component {
                                 <p>{item.name}</p>
                             </Link>
                             <div className={styles["btn"]}>
-                                <span><Icon type="play-circle" style={{color: "#aaa", fontSize: "12px"}} /></span>
-                                <span><Icon type="file-add" style={{color: "#aaa", fontSize: "12px"}} /></span>
+                                <span><Icon type="play-circle" style={{color: "#aaa", fontSize: "18px"}} /></span>
+                                <span><Icon type="file-add" style={{color: "#aaa", fontSize: "18px"}} /></span>
                             </div>
                         </div>
                     </div>
@@ -377,7 +381,7 @@ class Home extends Component {
                     </div>
                 </div>
                 <div className={styles["home_module"]}>
-                    <div className="main clearfix">
+                    <div className={styles["home_module_main"] + " main clearfix"}>
                         <div className={styles["home_left"] + " fl"}>
                             <div className={styles["personalized_module"]}>
                                 <div className={styles["home_module_title"] + " clearfix"}>
