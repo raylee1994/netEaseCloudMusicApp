@@ -36,7 +36,7 @@ export default class Slider extends Component {
 Slider.defaultProps = {
     switchBtn: false,
     dots: false,
-    autoplay: true
+    autoplay: false
 }
 Slider.propTypes = {
     switchBtn: PropTypes.bool,

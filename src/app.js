@@ -45,9 +45,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    loginRefresh: () => dispatch(loginRefresh),
-    loginCellphone: (params, successCallback, failCallback, errCallback) => dispatch(loginCellphone(params, successCallback, failCallback, errCallback)),
-    registerCellphone: (params, successCallback, failCallback, errCallback) => dispatch(registerCellphone(params, successCallback, failCallback, errCallback)),
+    loginRefresh: () => dispatch(loginRefresh()),
+    loginCellphone: () => dispatch(loginCellphone()),
+    registerCellphone: () => dispatch(registerCellphone()),
     switchAuthModal: visibility => dispatch(switchAuthModal(visibility)),
     refreshPage: status => dispatch(refreshPage(status)),
     getPlaylistTag: () => dispatch(getPlaylistTag())

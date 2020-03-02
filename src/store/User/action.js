@@ -1,5 +1,5 @@
 import http from "apis/http";
-import apisPath from "apis/http";
+import apisPath from "apis/paths";
 import * as types from "./actionType";
 import {createAction} from "redux-actions";
 import {createAjaxAction} from "common/js/utils";
@@ -53,7 +53,7 @@ export const registerCellphone = function(params, successCallback, failCallback,
     }
 }
 
-export const loginRefresh = function(params) {
+export const loginRefresh = function() {
     return function (dispatch) {
         dispatch(switchUserStatus(1))
         http.get("batch?/api/login/token/refresh&/api/nuser/account/get").then(res => {

@@ -6,6 +6,7 @@ import apisPaths from "apis/paths";
 import Banner from "components/banner";
 import Slider from "components/slider";
 import styles from "./index.module";
+import "./slider.less";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {Icon} from "antd"; 
@@ -43,18 +44,24 @@ class Home extends Component {
                         img: element.imageUrl,
                         to: "/album?id="+element.targetId
                     })
+                    backgroundImageList.push(element.imageUrl+"?imageView&blur=40x20")
                 }
                 if(element.targetType == 1) {
                     bannerList.push({
                         img: element.imageUrl,
                         to: "/song?id="+element.targetId
                     })
+                    backgroundImageList.push(element.imageUrl+"?imageView&blur=40x20")
                 }
-                backgroundImageList.push(element.imageUrl+"?imageView&blur=40x20")
             });
             this.setState({
                 bannerList,
-                backgroundImageList
+                backgroundImageList,
+                bannerBg: {
+                    backgroundImage: `url(${backgroundImageList[0]})`,
+                    backgroundSize: "6000px",
+                    backgroundPosition: "center center"
+                }
             })
         })
     }
@@ -227,7 +234,7 @@ class Home extends Component {
         const tagList = playlistTag.map((item, index) => {
             if(index <= 4) {
                 return (
-                    <li key={item.id}>
+                    <li key={item.id} className="fl">
                         <Link to={"/playList?cat="+item.name}>{item.name}</Link> 
                         {
                             index <= 3 && (
@@ -242,7 +249,7 @@ class Home extends Component {
         });
         const personalizedList = this.state.personalizedList.map((item, index) => {
             return (
-                <li key={item.id} className="fl">
+                <li key={index} className="fl">
                     <Link to={item.type+"?id="+item.id}>
                         <div className={styles["cover"]}>
                             <img src={item.picUrl} />
@@ -265,7 +272,7 @@ class Home extends Component {
         });
         const recommendList = this.state.recommendList.map((item, index) => {
             return (
-                <li key={item.id}>
+                <li key={index+1}>
                     <Link to={"/playlist?id="+item.id}>
                         <div className={styles["cover"]}>
                             <img src={item.picUrl} />
@@ -283,13 +290,13 @@ class Home extends Component {
         const toplist = this.state.toplist.map((item, index) => {
             const list = item.tracks.map((items, index) => {
                 return (
-                    <li key={items.id}>
+                    <li key={index}>
                         <Link to={"/song?id="+items.id}><span className={styles["no"] + (index < 3 ? (" " + styles["no-top"]) : "")}>{index+1}</span><span className={styles["nm"]}>{items.name}</span></Link>
                     </li>
                 )
             });
             return (
-                <div className={styles["toplist_item"] + " fl"} key={item.id}>
+                <div className={styles["toplist_item"] + " fl"} key={index}>
                     <div className={styles["top"]}>
                         <div className={styles["cver"] + " fl"}>
                             <Link to={"/toplist?id="+item.id}>
@@ -321,13 +328,13 @@ class Home extends Component {
                     {
                         this.state.albumList.slice(col*index, col*index+col).map((items, indexs) => {
                             return (
-                                <li key={item.id}>
+                                <li key={items.id}>
                                     <Link to={"/album?id="+items.id}>
-                                        <div className={styles["cover"]}>
+                                        <div className="cover">
                                             <img src={items.picUrl} />
                                         </div>
-                                        <p className={styles["title"]}>{items.title}</p>
-                                        <p className={styles["name"]}>{items.name}</p>
+                                        <p className="title">{items.title}</p>
+                                        <p className="name">{items.name}</p>
                                     </Link>
                                 </li>
                             )
@@ -366,7 +373,7 @@ class Home extends Component {
             <React.Fragment>
                 <div className={styles['banner']} style={this.state.bannerBg}>
                     <div className="main">
-                        <Banner bannerList={this.state.bannerList} afterChange={this.bannerChange} />
+                        <Banner switchBtn={true} bannerList={this.state.bannerList} afterChange={this.bannerChange} />
                     </div>
                 </div>
                 <div className={styles["home_module"]}>
@@ -375,7 +382,7 @@ class Home extends Component {
                             <div className={styles["personalized_module"]}>
                                 <div className={styles["home_module_title"] + " clearfix"}>
                                     <span className="font24 fl">热门推荐</span>
-                                    <ul className={styles["taglist" + " fl"]}>
+                                    <ul className={styles["taglist"] + " fl"}>
                                         {tagList}
                                     </ul>
                                     <Link to="/playList" className={styles["more"] + " fr"}>更多</Link>
@@ -391,7 +398,7 @@ class Home extends Component {
                                             <span className="font24">个性化推荐</span>
                                         </div>
                                         <ul className={styles["home_module_list"] + " clearfix"}>
-                                            <li>
+                                            <li key={0}>
                                                 <Link to="">
                                                     <div className={styles["date"] + " " + styles["u-date"] + " " + styles["f-alpha"]}>
                                                         <span className={styles["head"]}>{day}</span>
@@ -454,9 +461,9 @@ class Home extends Component {
                                             </div>
                                         </div>
                                         <ul className={styles["count"]}>
-                                            <li><strong>{this.state.user.eventCount}</strong><span>动态</span></li>
-                                            <li><strong>{this.state.user.follows}</strong><span>关注</span></li>
-                                            <li><strong>{this.state.user.followeds}</strong><span>粉丝</span></li>
+                                            <li key={0}><strong>{this.state.user.eventCount}</strong><span>动态</span></li>
+                                            <li key={1}><strong>{this.state.user.follows}</strong><span>关注</span></li>
+                                            <li key={2}><strong>{this.state.user.followeds}</strong><span>粉丝</span></li>
                                         </ul>
                                     </div>
                                 }

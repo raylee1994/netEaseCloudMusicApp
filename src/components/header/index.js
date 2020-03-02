@@ -115,13 +115,8 @@ class Header extends Component {
                     {
                         routes.map(element => <NavLink key={element.path} to={element.path} className="navLink fl" activeClassName={element.activeClassName}>{element.name}</NavLink>)
                     }
-                    <div className="search_wrap fr">
-                        <AutoComplete dataSource={this.state.dataSource} placeholder="音乐/视频/电台/用户">
-                            <Input className="search_input" onChange={this.searchSuggest} suffix={<Icon type="search" className="search_icon" />} />
-                        </AutoComplete>
-                    </div>
                     {
-                        this.props.userStatus == 3 && <a className="login fr" onclick={this.props.switchAuthModal(true)}>登录</a>
+                        this.props.userStatus == 3 && <a className="login fr" onClick={this.props.switchAuthModal(true)}>登录</a>
                     }
                     {
                         this.props.userStatus == 2 && 
@@ -130,11 +125,16 @@ class Header extends Component {
                                 <Menu.ItemGroup style={{ width: 158 }}>
                                     <Menu.Item key="1"><Link to={{pathname: "/user/home", search: "?id="+this.props.userId}}>我的主页</Link></Menu.Item>
                                     <Menu.Item key="2"><Link to={{pathname: "/user/update", search: "?id="+this.props.userId}}>个人设置</Link></Menu.Item>
-                                    <Menu.Item key="3"><span onclick={this.logout}>退出</span></Menu.Item>
+                                    <Menu.Item key="3"><span onClick={this.logout}>退出</span></Menu.Item>
                                 </Menu.ItemGroup>
                             </SubMenu>
                         </Menu>
                     }
+                    <div className="search_wrap fr">
+                        <AutoComplete dataSource={this.state.dataSource} placeholder="音乐/视频/电台/用户">
+                            <Input className="search_input" onChange={this.searchSuggest} suffix={<Icon type="search" className="search_icon" />} />
+                        </AutoComplete>
+                    </div>
                 </div>
             </div>
         )
@@ -147,8 +147,8 @@ const mapStateToProps = state => ({
     userId: state.user.profile.userId,
 })
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => ({
     switchAuthModal: visibility => () => dispatch(switchAuthModal(visibility))
-}
+})
 
 export default connect(mapStateToProps,mapDispatchToProps)(Header);

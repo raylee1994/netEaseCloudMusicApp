@@ -20,9 +20,9 @@ export default class Banner extends Component {
         const nextStyle = {right: this.props.switchBtnPos == "in" ? "20px" : "-20px"};
         const carouselList = this.props.bannerList.map((item,index) => {
             if(!item.to) {
-                return <Link key={index} to={() => {}}><img className="banner_img" src={item.img} /></Link>
+                return <Link key={index} to={() => {}} className="banner_link"><img className="banner_img" src={item.img} /></Link>
             }else {
-                return <Link key={index} to={item.to}><img className="banner_img" src={item.img} /></Link>
+                return <Link key={index} to={item.to} className="banner_link"><img className="banner_img" src={item.img} /></Link>
             }
         })
         return (
@@ -48,7 +48,7 @@ Banner.defaultProps = {
     switchBtn: false,
     switchBtnPos: "out",
     dots: true,
-    autoplay: true,
+    autoplay: false,
     afterChange: function(){}
 }
 Banner.propTypes = {
