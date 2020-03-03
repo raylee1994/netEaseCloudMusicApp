@@ -9,24 +9,21 @@ const setUserProfile = createAction(types.SET_USER_PROPFILE);
 
 export const switchAuthModal = createAction(types.SWITCH_AUTH_MODAL);
 
-export const loginCellphone = function(params, successCallback, failCallback, errCallback) {
+export const login = function() {
     return function (dispatch) {
         dispatch(switchUserStatus(1))
-        http.post(apisPath["login/cellphone"], params).then(res => {
-            if(res.data.code == 200) {
+        http.get("batch?/api/login/token/refresh&/api/nuser/account/get").then(res => {
+            if(res.data["/api/login/token/refresh"].code == 200 && res.data["/api/nuser/account/get"].code == 200) {
                 dispatch(switchUserStatus(2))
                 dispatch(setUserProfile({
                     avatarUrl: res.data.profile.avatarUrl,
-                    userId: res.data.profile.userId
+                    userId: res.data.profile.userId 
                 }))
-                successCallback && successCallback(res)
             }else {
                 dispatch(switchUserStatus(3))
-                failCallback && failCallback(res)
             }
         }, err => {
             dispatch(switchUserStatus(3))
-            errCallback && errCallback(err)
         })
     }
 }

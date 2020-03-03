@@ -1,12 +1,11 @@
 
 import React from "react";
-import {Provider} from "react-redux";
 import App from "./app";
-import store from "./store";
+import {AppContainer} from "react-hot-loader";
 
 function ReactApp() {
     return (
-        <Provider store={store}><App /></Provider>
+        <AppContainer><App /></AppContainer>
     )
 }
 

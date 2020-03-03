@@ -5,8 +5,7 @@ import routes from "router";
 import RouterGuard from "router/routerGuard";
 import Loading from "components/loading";
 import {connect} from "react-redux";
-import {loginRefresh, loginCellphone, switchAuthModal, registerCellphone} from "./store/User/action";
-import {refreshPage} from "store/Page";
+import {loginRefresh} from "./store/User/action";
 import {getPlaylistTag} from "store/Playlist";
 import AuthFormModal from "components/auth";
 
@@ -20,13 +19,13 @@ class App extends Component {
             <React.Fragment>
                 <BrowserRouter>
                     <MyHeader></MyHeader>
-                    <AuthFormModal authModalVisibility={this.props.authModalVisibility} loginCellphone={this.props.loginCellphone} switchAuthModal={this.props.switchAuthModal} is_refresh_page={this.props.is_refresh_page} refreshPage={this.props.refreshPage}></AuthFormModal>
+                    <AuthFormModal></AuthFormModal>
                     <Suspense fallback={<Loading></Loading>}>
                         <Switch>
                             {
                                 routes.map((element, index) => {
                                     return (
-                                        <Route key={index} path={element.path} exact={element.exact} render={() => <RouterGuard key={this.props.is_refresh_page} component={element.component}></RouterGuard>}></Route>
+                                        <Route key={index} path={element.path} exact={element.exact} render={() => <RouterGuard component={element.component}></RouterGuard>}></Route>
                                     )
                                 })
                             }
@@ -38,19 +37,9 @@ class App extends Component {
     }
 }
 
-const mapStateToProps = state => ({
-    is_refresh_page: state.is_refresh_page,
-    authModalVisibility: state.user.authModalVisibility,
-    playlistTag: state.playlist.playlistTag,
-})
-
 const mapDispatchToProps = dispatch => ({
     loginRefresh: () => dispatch(loginRefresh()),
-    loginCellphone: () => dispatch(loginCellphone()),
-    registerCellphone: () => dispatch(registerCellphone()),
-    switchAuthModal: visibility => dispatch(switchAuthModal(visibility)),
-    refreshPage: status => dispatch(refreshPage(status)),
     getPlaylistTag: () => dispatch(getPlaylistTag())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(null, mapDispatchToProps)(App)

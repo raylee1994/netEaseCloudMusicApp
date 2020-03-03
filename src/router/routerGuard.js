@@ -1,4 +1,5 @@
 import React,{Component,lazy} from "react";
+import {connect} from "react-redux";
 
 class RouterGuard extends Component {
     componentWillMount() {
@@ -7,9 +8,12 @@ class RouterGuard extends Component {
     render() {
         const RenderComponent = lazy(() => import(`views/${this.props.component}`));
         return (
-            <RenderComponent></RenderComponent>
+            <RenderComponent key={this.props.is_refresh_page}></RenderComponent>
         )
     }
 }
+const mapStateToProps = state => ({
+    is_refresh_page: state.is_refresh_page,
+})
 
-export default RouterGuard;
+export default connect(mapStateToProps)(RouterGuard);

@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import { Modal, Button, Checkbox, Input, Select, Form } from "antd";
 import style from "./index.module";
+import "./select.less";
 import countryCode from "common/js/country-code";
 import http from "apis/http";
 import apisPaths from "apis/paths";
 import {createAjax, errorMessage} from "common/js/utils";
 import {withRouter} from "react-router-dom";
+import {connect} from "react-redux";
+import {login, switchAuthModal, registerCellphone} from "store/User/action";
+import {refreshPage} from "store/Page";
 
 class Auth extends Component {
 	constructor(props) {
@@ -146,11 +150,12 @@ class Auth extends Component {
 						loading: false
 					});
 				}
-				this.props.loginCellphone({
-					phone: this.state.phone,
-					password: this.state.password,
+				const params = {
+					phone: this.form.getFieldValue("phone"),
+					password: this.form.getFieldValue("password"),
 					countrycode: this.state.phoneCode
-				}, successCallback, failCallback, errCallback)
+				}
+				this.props.login(params, successCallback, failCallback, errCallback)
 			}
 		})
 	}
@@ -428,7 +433,7 @@ class Auth extends Component {
 				{this.state.status == 1 && (
 					<div className={style["modal_content"]}>
 						<div className={style["modal_1_btngroup"]}>
-							<img src={require("./images/platform.png").default} />
+							<img style={{display: "block", margin: "0 auto"}} src={require("./images/platform.png").default} />
 							<Button type="primary" style={{margin: "10px 0"}} onClick={this.checkPolicy(2)} block>
 								手机号登录
 							</Button>
@@ -467,7 +472,7 @@ class Auth extends Component {
 							<div className={style["modal_2_inputgroup"]}>
 								<Form.Item>
 									<InputGroup compact>
-										<Select style={{ width: '20%' }} defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
+										<Select style={{ width: '35%' }} defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
 											{optionItems}
 										</Select>
 										{
@@ -476,10 +481,10 @@ class Auth extends Component {
 													required: true,
 													message: "请输入手机号码"
 													},{
-													type: /^1(3|4|5|6|7|8|9)\d{9}$/,
+													pattern: /^1(3|4|5|6|7|8|9)\d{9}$/,
 													message: "请输入正确的手机号"
 												}]
-											})(<Input style={{ width: '80%' }} placeholder="请输入手机号" />)
+											})(<Input style={{ width: '65%' }} placeholder="请输入手机号" />)
 										}
 									</InputGroup>
 								</Form.Item>
@@ -623,7 +628,20 @@ class Auth extends Component {
 	}
 }
 
-export default Form.create({name: "auth"})(withRouter(Auth));
+const mapStateToProps = state => ({
+    is_refresh_page: state.is_refresh_page,
+    authModalVisibility: state.user.authModalVisibility,
+})
+const mapDispatchToProps = dispatch => ({
+    login: (params, successCallback, failCallback, errCallback) => dispatch(login(params, successCallback, failCallback, errCallback)),
+    registerCellphone: () => dispatch(registerCellphone()),
+    switchAuthModal: visibility => dispatch(switchAuthModal(visibility)),
+    refreshPage: status => dispatch(refreshPage(status)),
+})
+
+const connectAuth = connect(mapStateToProps, mapDispatchToProps)(Auth)
+
+export default Form.create({name: "auth"})(withRouter(connectAuth));
 
 
 
