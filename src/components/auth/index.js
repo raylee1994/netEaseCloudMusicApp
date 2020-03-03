@@ -346,6 +346,7 @@ class Auth extends Component {
 		if(this.state.status == 6) {
 			this.props.refreshPage(!this.props.is_refresh_page)
 		}
+		this.props.switchAuthModal(false)
 		this.setState(this.resetState())
 	}
 	getLength(rule, value, callback) {
@@ -383,7 +384,7 @@ class Auth extends Component {
 	static getDerivedStateFromProps = (props, state) => {
 		if(props.authModalVisibility == false) {
 			return {
-				status, 
+				status: 1, 
 				agree: false,
 				phoneCode: "86",
 				phone: "",
@@ -400,9 +401,6 @@ class Auth extends Component {
 		}
 		return null
 	}
-	componentDidMount() {
-		console.log(this.state.status)
-	}
 	render() {
 		const InputGroup = Input.Group;
 		const { Option } = Select;
@@ -410,7 +408,7 @@ class Auth extends Component {
 		const {getFieldDecorator} = form;
 		const optionItems = countryCode.map((item, index) => {
 			return (
-				<Option value={item.code.substring(1)}>
+				<Option value={item.code.substring(1)} key={item.code}>
 					{item.cn} {item.code}
 				</Option>
 			);
@@ -423,6 +421,7 @@ class Auth extends Component {
 				maskStyle={{
 					background: "none"
 				}}
+				maskClosable={false}
 				wrapClassName={style.authModal}
 				onCancel={this.closeModal}
 			>
@@ -468,7 +467,7 @@ class Auth extends Component {
 							<div className={style["modal_2_inputgroup"]}>
 								<Form.Item>
 									<InputGroup compact>
-										<Select defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
+										<Select style={{ width: '20%' }} defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
 											{optionItems}
 										</Select>
 										{
@@ -480,7 +479,7 @@ class Auth extends Component {
 													type: /^1(3|4|5|6|7|8|9)\d{9}$/,
 													message: "请输入正确的手机号"
 												}]
-											})(<Input placeholder="请输入手机号" />)
+											})(<Input style={{ width: '80%' }} placeholder="请输入手机号" />)
 										}
 									</InputGroup>
 								</Form.Item>
@@ -491,7 +490,7 @@ class Auth extends Component {
 												required: true,
 												message: "请输入登录密码"
 											}]
-										})(<Input.Password placeholder="请输入密码" autocomplete="off" />)
+										})(<Input.Password placeholder="请输入密码" autoComplete="off" />)
 									}
 								</Form.Item>
 							</div>
@@ -502,9 +501,11 @@ class Auth extends Component {
 									</Form.Item>
 								</div>
 								<div className="fr">
-									<a href="javascript:;" onClick={this.setStatus(7)}>
-										忘记密码？
-									</a>
+									<Form.Item>
+										<a href="javascript:;" onClick={this.setStatus(7)}>
+											忘记密码？
+										</a>
+									</Form.Item>
 								</div>
 							</div>
 							<Form.Item>
@@ -543,7 +544,7 @@ class Auth extends Component {
 									{
 										getFieldDecorator("password", {})(<Input.Password
 											placeholder="设置登录密码，不少于6位"
-											autocomplete="off"
+											autoComplete="off"
 											onChange={this.checkPassword3}
 											onFocus={this.showPassWordTips}
 										/>)
