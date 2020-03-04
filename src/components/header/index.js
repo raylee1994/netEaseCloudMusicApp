@@ -33,7 +33,6 @@ function filterKeyword(k, w) {
 class Header extends Component {
     constructor(props) {
         super(props)
-        this.searchSuggest = this.searchSuggest.bind(this)
         this.state = {
             dataSource: ""
         }
@@ -46,6 +45,7 @@ class Header extends Component {
         })
     }
     searchSuggest(e) {
+        console.log(3)
         debounce(function(keywords) {
             createAjax(http.get(apisPaths["search/suggest"], {keywords}), res => {
                 let searchList = <div className="search_title"><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002",}}></Link></div>;
@@ -120,9 +120,9 @@ class Header extends Component {
                     }
                     {
                         this.props.userStatus == 2 && 
-                        <Menu className="fr">
-                            <SubMenu style={{ width: 30, marginLeft: 64 }} title={<Avatar src={this.props.avatarUrl} size={30}></Avatar>}>
-                                <Menu.ItemGroup style={{ width: 158 }}>
+                        <Menu className="fr" style={{ width: 30, marginRight: 60, marginTop: 10}} mode="horizontal">
+                            <SubMenu title={<Avatar src={this.props.avatarUrl} style={{marginLeft: 60}} size={30}></Avatar>}>
+                                <Menu.ItemGroup style={{ width: 120 }}>
                                     <Menu.Item key="1"><Link to={{pathname: "/user/home", search: "?id="+this.props.userId}}>我的主页</Link></Menu.Item>
                                     <Menu.Item key="2"><Link to={{pathname: "/user/update", search: "?id="+this.props.userId}}>个人设置</Link></Menu.Item>
                                     <Menu.Item key="3"><span onClick={this.logout}>退出</span></Menu.Item>

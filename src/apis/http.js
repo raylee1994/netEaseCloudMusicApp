@@ -2,7 +2,10 @@ import axios from "axios";
 import config from "common/js/config";
 
 const instance = axios.create({
-    baseURL: config.apiDomain
+    baseURL: config.apiDomain,
+    headers: {
+        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
+    }
 });
 
 const http = {

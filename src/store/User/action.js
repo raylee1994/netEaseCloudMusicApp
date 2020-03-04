@@ -3,6 +3,7 @@ import apisPath from "apis/paths";
 import * as types from "./actionType";
 import {createAction} from "redux-actions";
 import {createAjaxAction} from "common/js/utils";
+import qs from 'qs';
 
 const switchUserStatus = createAction(types.SWITCH_USER_STATUS);
 const setUserProfile = createAction(types.SET_USER_PROPFILE);
@@ -12,7 +13,11 @@ export const switchAuthModal = createAction(types.SWITCH_AUTH_MODAL);
 export const login = function(params, successCallback, failCallback, errCallback) {
     return function (dispatch) {
         dispatch(switchUserStatus(1))
-        http.post(apisPath["login/cellphone"], params).then(res => {
+        http.post(apisPath["login/cellphone"], qs.stringify(params), {
+            headers: {
+                'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
+            }
+            }).then(res => {
             if(res.data.code == 200) {
                 dispatch(switchUserStatus(2))
                 dispatch(setUserProfile({

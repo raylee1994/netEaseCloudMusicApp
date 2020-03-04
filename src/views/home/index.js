@@ -377,7 +377,7 @@ class Home extends Component {
             <React.Fragment>
                 <div className={styles['banner']} style={this.state.bannerBg}>
                     <div className="main">
-                        <Banner switchBtn={true} bannerList={this.state.bannerList} afterChange={this.bannerChange} />
+                        <Banner effect="fade" switchBtn={true} bannerList={this.state.bannerList} afterChange={this.bannerChange} />
                     </div>
                 </div>
                 <div className={styles["home_module"]}>
@@ -449,13 +449,13 @@ class Home extends Component {
                                 }else {
                                     <div className={styles["myinfo"] + " " + styles["myinfo2"]}>
                                         <div className={styles["f-cb"]}>
-                                            <Link to={"/user/home?id="+this.this.props.uid}>
+                                            <Link to={"/user/home?id="+this.props.uid}>
                                                 <img src={this.state.user.avatarUrl} />
                                             </Link>
                                         </div>
-                                        <div className={styles["info"]}>
+                                        <div className={styles["info"] + " clearfix"}>
                                             <h4 style={{"overflow": "hidden"}}>
-                                                <Link to={"/user/home?id="+this.this.props.uid}>{this.state.user.nickname}</Link>
+                                                <Link to={"/user/home?id="+this.props.uid}>{this.state.user.nickname}</Link>
                                             </h4>
                                             <p><span className={styles["level"]}>Lv. {this.state.user.level}</span></p>
                                             <div className={styles["btnwrap"]}>
