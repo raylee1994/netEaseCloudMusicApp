@@ -151,8 +151,8 @@ class Auth extends Component {
 					});
 				}
 				const params = {
-					phone: this.form.getFieldValue("phone"),
-					password: this.form.getFieldValue("password"),
+					phone: this.props.form.getFieldValue("phone"),
+					password: this.props.form.getFieldValue("password"),
 					countrycode: this.state.phoneCode
 				}
 				this.props.login(params, successCallback, failCallback, errCallback)
@@ -507,9 +507,9 @@ class Auth extends Component {
 								</div>
 								<div className="fr">
 									<Form.Item>
-										<a href="javascript:;" onClick={this.setStatus(7)}>
+										<span onClick={this.setStatus(7)}>
 											忘记密码？
-										</a>
+										</span>
 									</Form.Item>
 								</div>
 							</div>
