@@ -65,8 +65,8 @@ export const loginRefresh = function() {
             if(res.data["/api/login/token/refresh"].code == 200 && res.data["/api/nuser/account/get"].code == 200) {
                 dispatch(switchUserStatus(2))
                 dispatch(setUserProfile({
-                    avatarUrl: res.data.profile.avatarUrl,
-                    userId: res.data.profile.userId 
+                    avatarUrl: res.data["/api/nuser/account/get"].profile.avatarUrl,
+                    userId: res.data["/api/nuser/account/get"].profile.userId 
                 }))
             }else {
                 dispatch(switchUserStatus(3))

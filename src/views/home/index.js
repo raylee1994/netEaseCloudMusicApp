@@ -95,7 +95,8 @@ class Home extends Component {
         http.get(apisPaths["recommend/resource"]).then(res => {
             if(res.data.code == 200) {
                 const list = [];
-                for(let i = 0, item = res.data.recommend[i]; i < 3; i++) {
+                for(let i = 0; i < 3; i++) {
+                    let item = res.data.recommend[i];
                     list.push({
                         id: item.id,
                         name: item.name,
