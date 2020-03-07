@@ -127,10 +127,10 @@ class Auth extends Component {
 					loading: true
 				});
 				const successCallback = res => {
-					this.props.switchAuthModal(false)
 					this.setState({
 						loading: false
 					});
+					this.refresh()
 				}
 				const failCallback = res => {
 					errorMessage(res.data.msg)

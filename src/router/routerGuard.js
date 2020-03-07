@@ -8,12 +8,13 @@ class RouterGuard extends Component {
     render() {
         const RenderComponent = lazy(() => import(`views/${this.props.component}`));
         return (
-            <RenderComponent key={this.props.is_refresh_page}></RenderComponent>
+            this.props.is_page_loaded && <RenderComponent key={this.props.is_refresh_page}></RenderComponent>
         )
     }
 }
 const mapStateToProps = state => ({
     is_refresh_page: state.is_refresh_page,
+    is_page_loaded: state.is_page_loaded
 })
 
-export default connect(mapStateToProps)(RouterGuard);
+export default connect(mapStateToProps,null)(RouterGuard);

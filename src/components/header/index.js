@@ -34,78 +34,88 @@ class Header extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            dataSource: ""
+            dataSource: []
         }
         this.logout = this.logout.bind(this)
         this.searchSuggest = this.searchSuggest.bind(this)
     }
     logout() {
-        createAjax(http.get(apiPaths["logout"]), () => {
+        createAjax(http.get(apisPaths["logout"]), () => {
             window.location.reload()
         })
     }
     searchSuggest(e) {
-        console.log(3)
+        let _ts = this
         debounce(function(keywords) {
             createAjax(http.get(apisPaths["search/suggest"], {keywords}), res => {
-                let searchList = <div className="search_title"><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002",}}></Link></div>;
-                res.data.order.forEach(item => {
+                let searchList = [<div className="search_title"><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002",}}></Link></div>];
+                res.data.result.order.forEach(item => {
                     let options;
                     switch (item) {
                         case "artists":
-                            options = res.data.artists.map(item => 
+                            options = res.data.result.artists.map(item => 
                                 <Option key={item.id} value={item.name}>
                                     <Link to={{pathname: "/artist", search: "?id="+item.id}}>
-                                        {filterKeyword(item.name)}
+                                        {filterKeyword(keywords, item.name)}
                                     </Link>
                                 </Option>
                             )
-                            searchList += <OptGroup key="artists" label={<div className="label">歌手</div>}>{options}</OptGroup>
+                            searchList.concat([<OptGroup key="artists" label={<div className="label">歌手</div>}>{options}</OptGroup>])
                             break;
                         case "songs":
-                            options = res.data.songs.map(item => {
+                            options = res.data.result.songs.map(item => 
                                 <Option key={item.id} value={item.name}>
                                     <Link to={{pathname: "/song", search: "?id="+item.id}}>
-                                        {filterKeyword(item.name)}-
+                                        {filterKeyword(keywords, item.name)}-
                                         {
                                             item.artists.map(items => 
-                                                {filterKeyword(items.name) + " "}
+                                                (filterKeyword(keywords, items.name) + " ")
                                             )
                                         }
                                     </Link>
                                 </Option>
-                            })
-                            searchList += <OptGroup key="songs" label={<div className="label">单曲</div>}>{options}</OptGroup>
+                            )
+                            searchList.concat([<OptGroup key="songs" label={<div className="label">单曲</div>}>{options}</OptGroup>])
                             break;
                         case "albums":
-                            options = res.data.albums.map(item => 
+                            options = res.data.result.albums.map(item => 
                                 <Option key={item.id} value={item.name}>
                                     <Link to={{pathname: "/album", search: "?id="+item.id}}>
-                                        {filterKeyword(item.name)}-{filterKeyword(item.artist.name)}
+                                        {filterKeyword(keywords, item.name)}-{filterKeyword(keywords, item.artist.name)}
                                     </Link>
                                 </Option>
                             )
-                            searchList += <OptGroup key="albums" label={<div className="label">专辑</div>}>{options}</OptGroup>
+                            searchList.concat([<OptGroup key="albums" label={<div className="label">专辑</div>}>{options}</OptGroup>])
                             break;
                         case "mvs":
-                            options = res.data.mvs.map(item => 
+                            options = res.data.result.mvs.map(item => 
                                 <Option key={item.id} value={item.name}>
                                     <Link to={{pathname: "/mv", search: "?id="+item.id}}>
-                                        MV:{filterKeyword(item.name)}-{filterKeyword(item.artistName)}
+                                        MV:{filterKeyword(keywords, item.name)}-{filterKeyword(keywords, item.artistName)}
                                     </Link>
                                 </Option>
                             )
-                            searchList += <OptGroup key="mvs" label={<div className="label">视频</div>}>{options}</OptGroup>
+                            searchList.concat([<OptGroup key="mvs" label={<div className="label">视频</div>}>{options}</OptGroup>])
+                            break;
+                        case "playlists":
+                            options = res.data.result.playlists.map(item => 
+                                <Option key={item.id} value={item.name}>
+                                    <Link to={{pathname: "/playlists", search: "?id="+item.id}}>
+                                        {filterKeyword(keywords, item.name)}
+                                    </Link>
+                                </Option>
+                            )
+                            searchList.concat([<OptGroup key="playlists" label={<div className="label">歌单</div>}>{options}</OptGroup>])
                             break;
                         default:
                             return
                     }
                 })
-                this.setState({
+                _ts.setState({
                     dataSource: searchList
                 })
             })
-        })(e.target.value)
+        })(e)
     }
     render() {
         return (
@@ -120,19 +130,19 @@ class Header extends Component {
                     }
                     {
                         this.props.userStatus == 2 && 
-                        <Menu className="fr" style={{ width: 30, marginRight: 60, marginTop: 10}} mode="horizontal">
-                            <SubMenu title={<Avatar src={this.props.avatarUrl} style={{marginLeft: 60}} size={30}></Avatar>}>
-                                <Menu.ItemGroup style={{ width: 120 }}>
+                        <Menu className="fr" style={{ width: 30, marginRight: 30, marginTop: 10}} mode="horizontal">
+                            <SubMenu title={<Avatar src={this.props.avatarUrl} className="avatar" size={30}></Avatar>}>
+                                <Menu.ItemGroup>
                                     <Menu.Item key="1"><Link to={{pathname: "/user/home", search: "?id="+this.props.userId}}>我的主页</Link></Menu.Item>
                                     <Menu.Item key="2"><Link to={{pathname: "/user/update", search: "?id="+this.props.userId}}>个人设置</Link></Menu.Item>
-                                    <Menu.Item key="3"><span onClick={this.logout}>退出</span></Menu.Item>
+                                    <Menu.Item key="3" onClick={this.logout}><span>退出</span></Menu.Item>
                                 </Menu.ItemGroup>
                             </SubMenu>
                         </Menu>
                     }
                     <div className="search_wrap fr">
-                        <AutoComplete dataSource={this.state.dataSource} placeholder="音乐/视频/电台/用户">
-                            <Input className="search_input" onChange={this.searchSuggest} suffix={<Icon type="search" className="search_icon" />} />
+                        <AutoComplete onChange={this.searchSuggest} dataSource={this.state.dataSource} placeholder="音乐/视频/电台/用户">
+                            <Input className="search_input" suffix={<Icon type="search" className="search_icon" />} />
                         </AutoComplete>
                     </div>
                 </div>
