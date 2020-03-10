@@ -71,7 +71,7 @@ class Header extends Component {
                             {do{
                                 if(item == "artists") {
                                     res.data.result.artists.map((items, index) => 
-                                        <Option key={index} value={items.name}>
+                                        <Option key={index} text={items.name}>
                                             <Link to={{pathname: "/artist", search: "?id="+items.id}}>
                                                 {filterKeyword(keywords, items.name)}
                                             </Link>
@@ -79,7 +79,7 @@ class Header extends Component {
                                     )
                                 }else if(item == "songs") {
                                     res.data.result.songs.map((items, index) => 
-                                        <Option key={index} value={items.name}>
+                                        <Option key={index} text={items.name}>
                                             <Link to={{pathname: "/song", search: "?id="+items.id}}>
                                                 {filterKeyword(keywords, items.name)}-
                                                 {
@@ -92,7 +92,7 @@ class Header extends Component {
                                     )
                                 }else if(item == "albums") {
                                     res.data.result.albums.map((items, index) => 
-                                        <Option key={index} value={items.name}>
+                                        <Option key={index} text={items.name}>
                                             <Link to={{pathname: "/album", search: "?id="+items.id}}>
                                                 {filterKeyword(keywords, items.name)}-{filterKeyword(keywords, items.artist.name)}
                                             </Link>
@@ -100,7 +100,7 @@ class Header extends Component {
                                     )
                                 }else if(item == "mvs") {
                                     res.data.result.mvs.map((items, index) => 
-                                        <Option key={index} value={items.name}>
+                                        <Option key={index} text={items.name}>
                                             <Link to={{pathname: "/mv", search: "?id="+items.id}}>
                                                 MV:{filterKeyword(keywords, items.name)}-{filterKeyword(keywords, items.artistName)}
                                             </Link>
@@ -108,7 +108,7 @@ class Header extends Component {
                                     )
                                 }else if(item == "playlists") {
                                     res.data.result.playlists.map((items, index) => 
-                                        <Option key={index} value={items.name}>
+                                        <Option key={index} text={items.name}>
                                             <Link to={{pathname: "/playlists", search: "?id="+items.id}}>
                                                 {filterKeyword(keywords, items.name)}
                                             </Link>
@@ -119,7 +119,7 @@ class Header extends Component {
                         </OptGroup>
                     )
                 })
-                searchList = [<div className="search_title"><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002"}}></Link></div>].concat(searchList)
+                searchList = [<div className="search_title" key="search_title"><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002"}}></Link></div>].concat(searchList)
                 _ts.setState({
                     dataSource: searchList
                 })
@@ -150,7 +150,7 @@ class Header extends Component {
                         </Menu>
                     }
                     <div className="search_wrap fr">
-                        <AutoComplete onChange={this.searchSuggest} dataSource={this.state.dataSource} optionLabelProp="value" placeholder="音乐/视频/电台/用户">
+                        <AutoComplete onChange={this.searchSuggest} dataSource={this.state.dataSource} optionLabelProp="text" placeholder="音乐/视频/电台/用户">
                             <Input className="search_input" suffix={<Icon type="search" className="search_icon" />} />
                         </AutoComplete>
                     </div>
