@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Modal, Button, Checkbox, Input, Select, Form } from "antd";
 import style from "./index.module";
-import "./select.less";
 import countryCode from "common/js/country-code";
 import http from "apis/http";
 import apisPaths from "apis/paths";
@@ -90,7 +89,7 @@ class Auth extends Component {
 			);
 		} else {
 			return (
-				<div className={style["modalFooter"] + " " + style["clearfix"]}>
+				<div className={style["modalFooter"] + " clearfix"}>
 					<div className={style["returnLogin"] + " fl"} onClick={this.setStatus(1)}>
 						返回登录
 					</div>
@@ -261,9 +260,11 @@ class Auth extends Component {
 		})
 	}
 	checkSpace(password) {
-		return password.test(/\s/g) ? "red" : ""
+		password = password || ""
+		return /\s/g.test(password) ? "red" : ""
 	}
 	checkFormat(password) {
+		password = password || ""
 		var test1 = /(\d)/g.test(password)
 		var test2 = /[a-z]/gi.test(password)
 		var test3 = /\S\D[^a-z]/gi.test(password)
@@ -271,9 +272,10 @@ class Auth extends Component {
 		var newarr = arr.filter(function(item) {
 			return item
 		})
-		return newarr.length >= 2 ? "red" : ""
+		return newarr.length < 2 ? "red" : ""
 	}
 	checkLength(password) {
+		password = password || ""
 		return (password.length < 6 || password.length > 16) ? "red" : ""
 	}
 	hidePhone(phone) {
@@ -472,7 +474,7 @@ class Auth extends Component {
 							<div className={style["modal_2_inputgroup"]}>
 								<Form.Item>
 									<InputGroup compact>
-										<Select style={{ width: '35%' }} defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
+										<Select dropdownMatchSelectWidth={false} style={{ width: '35%' }} defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
 											{optionItems}
 										</Select>
 										{
@@ -528,7 +530,7 @@ class Auth extends Component {
 								<p>手机号：</p> 
 								<Form.Item>
 									<InputGroup compact>
-										<Select defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
+										<Select dropdownMatchSelectWidth={false} style={{ width: '35%' }} defaultValue={this.state.phoneCode} onChange={this.setPhoneCode}>
 											{optionItems}
 										</Select>
 										{
@@ -540,7 +542,7 @@ class Auth extends Component {
 													type: /^1(3|4|5|6|7|8|9)\d{9}$/,
 													message: "请输入正确的手机号"
 												}]
-											})(<Input placeholder="请输入手机号" onChange={this.checkPhone3} />)
+											})(<Input style={{ width: '65%' }} placeholder="请输入手机号" onChange={this.checkPhone3} />)
 										}
 									</InputGroup>
 								</Form.Item>

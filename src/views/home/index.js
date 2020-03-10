@@ -199,7 +199,8 @@ class Home extends Component {
         http.get(apisPaths["daily_signin"], {type: 1}).then(res => {
             this.setState({
                 signing: false,
-                tooltipVisible: true
+                tooltipVisible: true,
+                sign: true
             })
             setTimeout(() => {
                 this.setState({

@@ -27,7 +27,7 @@ function debounce(fn, delay = 200) {
 }
 
 function filterKeyword(k, w) {
-    return w.replace(k, "<span className='blue'>"+k+"</span>")
+    return w.replace(k, "<span class='blue'>"+k+"</span>")
 }
 
 function convertType(type) {
@@ -65,63 +65,75 @@ class Header extends Component {
         let _ts = this
         debounce(function(keywords) {
             createAjax(http.get(apisPaths["search/suggest"], {keywords}), res => {
-                let searchList = res.data.result.order.map(item => {
-                    return (
-                        <OptGroup key={item} label={<div className="label">{convertType(item)}</div>}>
-                            {do{
-                                if(item == "artists") {
-                                    res.data.result.artists.map((items, index) => 
-                                        <Option key={index} text={items.name}>
-                                            <Link to={{pathname: "/artist", search: "?id="+items.id}}>
-                                                {filterKeyword(keywords, items.name)}
-                                            </Link>
-                                        </Option>
-                                    )
-                                }else if(item == "songs") {
-                                    res.data.result.songs.map((items, index) => 
-                                        <Option key={index} text={items.name}>
-                                            <Link to={{pathname: "/song", search: "?id="+items.id}}>
-                                                {filterKeyword(keywords, items.name)}-
-                                                {
-                                                    items.artists.map(itemss => 
-                                                        (filterKeyword(keywords, itemss.name) + " ")
-                                                    )
-                                                }
-                                            </Link>
-                                        </Option>
-                                    )
-                                }else if(item == "albums") {
-                                    res.data.result.albums.map((items, index) => 
-                                        <Option key={index} text={items.name}>
-                                            <Link to={{pathname: "/album", search: "?id="+items.id}}>
-                                                {filterKeyword(keywords, items.name)}-{filterKeyword(keywords, items.artist.name)}
-                                            </Link>
-                                        </Option>
-                                    )
-                                }else if(item == "mvs") {
-                                    res.data.result.mvs.map((items, index) => 
-                                        <Option key={index} text={items.name}>
-                                            <Link to={{pathname: "/mv", search: "?id="+items.id}}>
-                                                MV:{filterKeyword(keywords, items.name)}-{filterKeyword(keywords, items.artistName)}
-                                            </Link>
-                                        </Option>
-                                    )
-                                }else if(item == "playlists") {
-                                    res.data.result.playlists.map((items, index) => 
-                                        <Option key={index} text={items.name}>
-                                            <Link to={{pathname: "/playlists", search: "?id="+items.id}}>
-                                                {filterKeyword(keywords, items.name)}
-                                            </Link>
-                                        </Option>
-                                    )
-                                }else{}
-                            }}
-                        </OptGroup>
-                    )
-                })
-                searchList = [<div className="search_title" key="search_title"><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002"}}></Link></div>].concat(searchList)
+                if(Object.keys(res.data.result).length > 0) {
+                    var searchList = res.data.result.order.map(item => {
+                        return (
+                            <OptGroup key={item} label={<div className="label">{convertType(item)}</div>}>
+                                {do{
+                                    if(item == "artists") {
+                                        res.data.result.artists.map((items, index) => 
+                                            <Option key={index} text={items.name}>
+                                                <Link to={{pathname: "/artist", search: "?id="+items.id}}>
+                                                    <span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, items.name)}}></span>
+                                                </Link>
+                                            </Option>
+                                        )
+                                    }else if(item == "songs") {
+                                        res.data.result.songs.map((items, index) => 
+                                            <Option key={index} text={items.name}>
+                                                <Link to={{pathname: "/song", search: "?id="+items.id}}>
+                                                    <span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, items.name)}}></span>-
+                                                    {
+                                                        items.artists.map(itemss => 
+                                                            <span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, itemss.name)}}></span>
+                                                        )
+                                                    }
+                                                </Link>
+                                            </Option>
+                                        )
+                                    }else if(item == "albums") {
+                                        res.data.result.albums.map((items, index) => 
+                                            <Option key={index} text={items.name}>
+                                                <Link to={{pathname: "/album", search: "?id="+items.id}}>
+                                                    <span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, items.name)}}></span>-<span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, items.artist.name)}}></span>
+                                                </Link>
+                                            </Option>
+                                        )
+                                    }else if(item == "mvs") {
+                                        res.data.result.mvs.map((items, index) => 
+                                            <Option key={index} text={items.name}>
+                                                <Link to={{pathname: "/mv", search: "?id="+items.id}}>
+                                                    MV:<span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, items.name)}}></span>-<span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, items.artistName)}}></span>
+                                                </Link>
+                                            </Option>
+                                        )
+                                    }else if(item == "playlists") {
+                                        res.data.result.playlists.map((items, index) => 
+                                            <Option key={index} text={items.name}>
+                                                <Link to={{pathname: "/playlists", search: "?id="+items.id}}>
+                                                    <span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, items.name)}}></span>
+                                                </Link>
+                                            </Option>
+                                        )
+                                    }else{}
+                                }}
+                            </OptGroup>
+                        )
+                    })
+                    searchList = [<div className="search_title" key="search_title"><Link to={{ pathname: "/search", search: "?keywords="+keywords+"&type=1002"}}>搜“{keywords}”相关用户></Link></div>].concat(searchList)
+                }else {
+                    var searchList = [<div key="none">暂无结果</div>]
+                }
                 _ts.setState({
                     dataSource: searchList
+                })
+            }, () => {
+                _ts.setState({
+                    dataSource: []
+                })
+            }, () => {
+                _ts.setState({
+                    dataSource: []
                 })
             })
         })(e)
@@ -150,7 +162,7 @@ class Header extends Component {
                         </Menu>
                     }
                     <div className="search_wrap fr">
-                        <AutoComplete onChange={this.searchSuggest} dataSource={this.state.dataSource} optionLabelProp="text" placeholder="音乐/视频/电台/用户">
+                        <AutoComplete style={{ width: '100%' }} onChange={this.searchSuggest} dataSource={this.state.dataSource} optionLabelProp="text" placeholder="音乐/视频/电台/用户">
                             <Input className="search_input" suffix={<Icon type="search" className="search_icon" />} />
                         </AutoComplete>
                     </div>
