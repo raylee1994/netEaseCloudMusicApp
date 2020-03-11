@@ -79,10 +79,10 @@ class Auth extends Component {
 		} else if (this.state.status == 2) {
 			return (
 				<div className={style["modalFooter"] + " clearfix"}>
-					<div className={style["returnLogin"] + " fl"} onClick={this.setStatus(1)}>
+					<div style={{cursor: "pointer"}} className={style["returnLogin"] + " fl"} onClick={this.setStatus(1)}>
 						&lt; 其他登录方式
 					</div>
-					<div className={style["turnRegister"] + " fr"} onClick={this.setStatus(3)}>
+					<div style={{cursor: "pointer"}} className={style["turnRegister"] + " fr"} onClick={this.setStatus(3)}>
 						没有账号？免费注册 &gt;
 					</div>
 				</div>
@@ -90,7 +90,7 @@ class Auth extends Component {
 		} else {
 			return (
 				<div className={style["modalFooter"] + " clearfix"}>
-					<div className={style["returnLogin"] + " fl"} onClick={this.setStatus(1)}>
+					<div style={{cursor: "pointer"}} className={style["returnLogin"] + " fl"} onClick={this.setStatus(1)}>
 						返回登录
 					</div>
 				</div>
@@ -228,7 +228,7 @@ class Auth extends Component {
 		});
 	}
 	checkPhone3(e) {
-		if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(e.target.value)) {
+		if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(e.target.value)) {
 			this.setState({
 				hasPhone: true
 			})
@@ -243,7 +243,7 @@ class Auth extends Component {
 		var checkSpace = this.checkSpace(e.target.value)
 		var checkLength = this.checkLength(e.target.value)
 		var checkFormat = this.checkFormat(e.target.value)
-		if(checkSpace && checkLength && checkFormat) {
+		if(!checkSpace && !checkLength && !checkFormat) {
 			this.setState({
 				hasPassword: true
 			})
@@ -539,7 +539,7 @@ class Auth extends Component {
 													required: true,
 													message: "请输入手机号码"
 													},{
-													type: /^1(3|4|5|6|7|8|9)\d{9}$/,
+													pattern: /^1(3|4|5|6|7|8|9)\d{9}$/,
 													message: "请输入正确的手机号"
 												}]
 											})(<Input style={{ width: '65%' }} placeholder="请输入手机号" onChange={this.checkPhone3} />)
@@ -561,7 +561,7 @@ class Auth extends Component {
 								<p style={{display: this.state.showTips ? "block" : "none"}} className={this.checkFormat(form.getFieldValue("password"))}>包含字母、数字、符号中至少两种</p> 
 								<p style={{display: this.state.showTips ? "block" : "none"}} className={this.checkLength(form.getFieldValue("password"))}>密码长度为6-16位</p> 
 							</div>
-							<Button type="primary" htmlType="submit" disabled={!this.hasPhone || !this.hasPassword} block>
+							<Button type="primary" htmlType="submit" disabled={!this.state.hasPhone || !this.state.hasPassword} block>
 								下一步
 							</Button>
 						</Form>

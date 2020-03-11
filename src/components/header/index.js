@@ -84,9 +84,13 @@ class Header extends Component {
                                                 <Link to={{pathname: "/song", search: "?id="+items.id}}>
                                                     <span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, items.name)}}></span>-
                                                     {
-                                                        items.artists.map(itemss => 
-                                                            <span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, itemss.name)}}></span>
-                                                        )
+                                                        items.artists.map(itemss => {
+                                                            return (
+                                                                <React.Fragment>
+                                                                    <span dangerouslySetInnerHTML={{__html: filterKeyword(keywords, itemss.name)}}></span>&nbsp;
+                                                                </React.Fragment>
+                                                            )
+                                                        })
                                                     }
                                                 </Link>
                                             </Option>
