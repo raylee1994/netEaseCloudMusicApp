@@ -48,6 +48,7 @@ class Auth extends Component {
 		this.handleSubmit3 = this.handleSubmit3.bind(this);
 		this.handleSubmit5 = this.handleSubmit5.bind(this);
 		this.closeModal = this.closeModal.bind(this);
+		this.getCaptcha = this.getCaptcha.bind(this);
 		this.interval = null;
 	}
 	setStatus(status) {
@@ -159,21 +160,21 @@ class Auth extends Component {
 		})
 	}
 	getCaptcha() {
+		this.setState({
+			releaseTime: 60
+		})
 		this.interval = setInterval(() => {
 			var releaseTime = this.state.releaseTime
 			if(releaseTime <= 0) {
 				clearInterval(this.interval)
-				this.setState({
-					releaseTime: 60
-				})
 				return
 			}
 			this.setState({
 				releaseTime: releaseTime-1
 			})
 		}, 1000)
-		createAjax(http.post(apisPaths["captcha/sent"], {
-			phone: this.form.getFieldValue("phone")
+		createAjax(http.get(apisPaths["captcha/sent"], {
+			phone: this.state.phone
 		}))
 	}
 	handleSubmit3(e) {
@@ -182,10 +183,10 @@ class Auth extends Component {
 			if(!err) {
 				var newState = Object.assign({}, {
 					status: this.state.status == 7 ? 8 : 4,
-					phone: this.form.getFieldValue("phone")
+					phone: this.props.form.getFieldValue("phone")
 				}, this.state.status == 7 ? {resetPassword: true} : {})
-				this.setState(newState)
 				this.getCaptcha()
+				this.setState(newState)
 			}
 		})
 	}
@@ -285,33 +286,33 @@ class Auth extends Component {
 		return str
 	}
 	nextInput(e, index) {
-		return () => {
-			e.target.value = e.target.value.replace(/\s/, "")
-			if(e.target.value.length == 1) {
-				if(index) {
-					this["password"+index].current.focus()
-				}else {
+		e.target.value = e.target.value.replace(/\s/, "")
+		if(e.target.value.length == 1) {
+			if(index < 5) {
+				this["captcha"+index].current.focus()
+			}else {
+				setTimeout(() => {
 					this.register()
-				}
+				}, 20);
 			}
 		}
 	}
 	register() {
-		if(this.captcha1.current.value == "" || this.captcha2.current.value == "" || this.captcha3.current.value == "" || this.captcha4.current.value == "") {
+		if(this.captcha1.current.state.value == "" || this.captcha2.current.state.value == "" || this.captcha3.current.state.value == "" || this.captcha4.current.state.value == "") {
 			errorMessage("请输入验证码");
 			return;
 		}
 		this.setState({
 			loading: true
 		})
-		createAjax(http.post(apisPaths["captcha/verify"], {
+		createAjax(http.get(apisPaths["captcha/verify"], {
 			phone: this.state.phone,
-			captcha: this.captcha1.current.value + this.captcha2.current.value + this.captcha3.current.value + this.captcha4.current.value
+			captcha: this.captcha1.current.state.value + this.captcha2.current.state.value + this.captcha3.current.state.value + this.captcha4.current.state.value
 		}), res => {
 			this.setState({
-				captcha: this.captcha1.current.value + this.captcha2.current.value + this.captcha3.current.value + this.captcha4.current.value
+				captcha: this.captcha1.current.state.value + this.captcha2.current.state.value + this.captcha3.current.state.value + this.captcha4.current.state.value
 			})
-			createAjax(http.post(apisPaths["cellphone/existence/check"], {
+			createAjax(http.get(apisPaths["cellphone/existence/check"], {
 				phone: this.state.phone
 			}), res => {
 				if(res.data.exist == 1) { //已注册
@@ -331,6 +332,7 @@ class Auth extends Component {
 					})
 				}else { //未注册
 					this.setState({
+						loading: false,
 						status: 5
 					})
 				}
@@ -572,15 +574,15 @@ class Auth extends Component {
 						<p>你的手机号：+{this.state.phoneCode} {this.hidePhone(this.state.phone)}</p> 
 						<p>为了安全，我们会给你发送短信验证码</p>
 						<div className={style["modal_4_password"]}>
-							<Input className={style["modal_4_captcha"]} ref={this.captcha1} maxLength="1" onChange={e => this.nextInput(e, 2)} />
-							<Input className={style["modal_4_captcha"]} ref={this.captcha2} maxLength="1" onChange={e => this.nextInput(e, 3)} />
-							<Input className={style["modal_4_captcha"]} ref={this.captcha3} maxLength="1" onChange={e => this.nextInput(e, 4)} />
-							<Input className={style["modal_4_captcha"]} ref={this.captcha4} maxLength="1" onChange={e => this.nextInput(e)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha1} maxLength={1} onChange={e => this.nextInput(e, 2)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha2} maxLength={1} onChange={e => this.nextInput(e, 3)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha3} maxLength={1} onChange={e => this.nextInput(e, 4)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha4} maxLength={1} onChange={e => this.nextInput(e, 5)} />
 						</div> 
 						<div className={style["modal_4_captcha"] + " clearfix"}>
 							{
 								this.state.releaseTime <= 0 && (
-									<div className={style["modal_4_getCaptcha"] + " fr blue"} onClick={this.getCaptcha}>重新获取</div>
+									<div className={style["modal_4_getCaptcha"] + " fr blue"} style={{cursor: "pointer"}} onClick={this.getCaptcha}>重新获取</div>
 								)
 							}
 							{

@@ -36,7 +36,7 @@ export function createAjax(api, callback, failCallback, errCallback) {
         }
     }, error => {
         if (error.response) {
-            errorMessage(error.response.data)
+            errorMessage(error.response.data.message)
         } else if (error.request) {
             errorMessage(error.request)
         } else {
