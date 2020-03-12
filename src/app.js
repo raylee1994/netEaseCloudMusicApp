@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import {loginRefresh} from "./store/User/action";
 import {getPlaylistTag} from "store/Playlist";
 import AuthFormModal from "components/auth";
+import BackToTop from "components/backTop";
 
 class App extends Component {
     componentDidMount() {
@@ -19,6 +20,7 @@ class App extends Component {
             <React.Fragment>
                 <BrowserRouter>
                     <MyHeader></MyHeader>
+                    <BackToTop></BackToTop>
                     <AuthFormModal></AuthFormModal>
                     <Suspense fallback={<Loading></Loading>}>
                         <Switch>

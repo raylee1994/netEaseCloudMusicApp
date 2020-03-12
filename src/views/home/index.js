@@ -27,7 +27,8 @@ class Home extends Component {
             login: false,
             signing: false,
             tooltipVisible: false,
-            user: {}
+            user: {},
+            sign: false
         }
         this.sign = this.sign.bind(this)
         this.bannerChange = this.bannerChange.bind(this)
@@ -180,14 +181,15 @@ class Home extends Component {
             if(res.data.code == 200) {
                 this.setState({
                     user: {
-                        sign: res.data.pcSign,
                         avatarUrl: res.data.profile.avatarUrl,
                         nickname: res.data.profile.nickname,
                         level: res.data.level,
                         eventCount: res.data.profile.eventCount,
                         follows: res.data.profile.follows,
                         followeds: res.data.profile.followeds
-                    }
+                    },
+                    sign: res.data.pcSign
+
                 })
             }
         })
@@ -462,7 +464,7 @@ class Home extends Component {
                                             <p><span className={styles["level"]}>Lv. {this.state.user.level}</span></p>
                                             <div className={styles["btnwrap"]}>
                                                 <Tooltip title="+2积分" visible={this.state.tooltipVisible} placement="bottom">
-                                                    <Button type="primary" loading={this.state.signing} disabled={this.state.user.sign} onClick={this.sign}>{this.state.user.sign ? "已 签 到" : "签 到"}</Button>
+                                                    <Button type="primary" loading={this.state.signing} disabled={this.state.sign} onClick={this.sign}>{this.state.sign ? "已 签 到" : "签 到"}</Button>
                                                 </Tooltip>
                                             </div>
                                         </div>

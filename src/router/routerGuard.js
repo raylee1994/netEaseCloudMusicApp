@@ -8,7 +8,7 @@ class RouterGuard extends Component {
     render() {
         const RenderComponent = lazy(() => import(`views/${this.props.component}`));
         return (
-            this.props.is_page_loaded && <RenderComponent key={this.props.is_refresh_page}></RenderComponent>
+            this.props.is_page_loaded && <RenderComponent key={this.props.is_refresh_page}></RenderComponent> //为路由组件设置key值，强制组件重载
         )
     }
 }

@@ -213,6 +213,17 @@ class Auth extends Component {
 					this.setState({
 						loading: false
 					})
+				}, error => {
+					if (error.response) {
+						errorMessage(error.response.data.message)
+					} else if (error.request) {
+						errorMessage(error.request)
+					} else {
+						errorMessage(error.message)
+					}
+					this.setState({
+						loading: false
+					});
 				})
 			}
 		})
@@ -320,11 +331,7 @@ class Auth extends Component {
 				phone: this.state.phone
 			}), res => {
 				if(res.data.exist == 1) { //已注册
-					this.props.registerCellphone({
-						phone: this.state.phone,
-						password: this.state.password,
-						captcha: this.state.captcha
-					}, res => {
+					const successCallback = res => {
 						if(this.state.resetPassword) {
 							this.refresh()
 						}else {
@@ -333,7 +340,30 @@ class Auth extends Component {
 								username: res.data.profile.nickname
 							})
 						}
-					})
+					}
+					const failCallback = res => {
+						this.setState({
+							loading: false
+						})
+					}
+					const errCallback = error => {
+						if (error.response) {
+							errorMessage(error.response.data.message)
+						} else if (error.request) {
+							errorMessage(error.request)
+						} else {
+							errorMessage(error.message)
+						}
+						this.setState({
+							loading: false
+						});
+					}
+					const params = {
+						phone: this.state.phone,
+						password: this.state.password,
+						captcha: this.state.captcha
+					}
+					this.props.registerCellphone(params, successCallback, failCallback, errCallback)
 				}else { //未注册
 					this.setState({
 						loading: false,
@@ -523,7 +553,7 @@ class Auth extends Component {
 								</div>
 								<div className="fr">
 									<Form.Item>
-										<span onClick={this.setStatus(7)}>
+										<span onClick={this.setStatus(7)} style={{cursor: "pointer"}}>
 											忘记密码？
 										</span>
 									</Form.Item>
@@ -632,7 +662,7 @@ class Auth extends Component {
 				)}
 				{this.state.status == 6 && (
 					<div className={style["modal_content"]}>
-						<p>改手机号已与云音乐账号 <b>{this.state.username}</b> 绑定，</p> 
+						<p>该手机号已与云音乐账号 <b>{this.state.username}</b> 绑定，</p> 
 						<p>以后你可以直接用改手机号+密码登录</p>
 						<Button type="primary" onClick={this.refresh} block>
 							知道了
@@ -650,7 +680,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     login: (params, successCallback, failCallback, errCallback) => dispatch(login(params, successCallback, failCallback, errCallback)),
-    registerCellphone: () => dispatch(registerCellphone()),
+    registerCellphone: (params, successCallback, failCallback, errCallback) => dispatch(registerCellphone(params, successCallback, failCallback, errCallback)),
     switchAuthModal: visibility => dispatch(switchAuthModal(visibility)),
     refreshPage: status => dispatch(refreshPage(status)),
 })

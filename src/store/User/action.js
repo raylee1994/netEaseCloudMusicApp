@@ -40,6 +40,7 @@ export const login = function(params, successCallback, failCallback, errCallback
 export const registerCellphone = function(params, successCallback, failCallback, errCallback) {
     return function (dispatch) {
         dispatch(switchUserStatus(1))
+        console.log(params)
         http.post(apisPath["register/cellphone"], qs.stringify(params), {
             headers: {
                 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'

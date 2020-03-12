@@ -1,7 +1,7 @@
 import React,{Component} from "react";
 import {BackTop} from "antd";
 
-export default function BackTop() {
+export default function BackToTop() {
     return (
         <BackTop />
     )

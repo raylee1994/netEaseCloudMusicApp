@@ -70,3 +70,9 @@ export function countTrasnform(count) {
         return (count/10000).toFixed(1) + '万'
     }
 }
+
+export class Storage {
+    static setItem() {
+        
+    }
+}
