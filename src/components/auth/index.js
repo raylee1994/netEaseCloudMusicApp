@@ -27,6 +27,10 @@ class Auth extends Component {
 			releaseTime: 60,
 			username: "",
 			captcha: "",
+			captcha1: "",
+			captcha2: "",
+			captcha3: "",
+			captcha4: "",
 			resetPassword: false
 		};
 		this.captcha1 = React.createRef();
@@ -140,7 +144,7 @@ class Auth extends Component {
 				}
 				const errCallback = error => {
 					if (error.response) {
-						errorMessage(error.response.data)
+						errorMessage(error.response.data.message)
 					} else if (error.request) {
 						errorMessage(error.request)
 					} else {
@@ -286,8 +290,8 @@ class Auth extends Component {
 		return str
 	}
 	nextInput(e, index) {
-		e.target.value = e.target.value.replace(/\s/, "")
-		if(e.target.value.length == 1) {
+		this.state["captcha"+(index-1)] = e.target.value.replace(/\s/, "")
+		if(this.state["captcha"+(index-1)].length == 1) {
 			if(index < 5) {
 				this["captcha"+index].current.focus()
 			}else {
@@ -298,7 +302,7 @@ class Auth extends Component {
 		}
 	}
 	register() {
-		if(this.captcha1.current.state.value == "" || this.captcha2.current.state.value == "" || this.captcha3.current.state.value == "" || this.captcha4.current.state.value == "") {
+		if(this.state.captcha1 == "" || this.state.captcha2 == "" || this.state.captcha3 == "" || this.state.captcha4 == "") {
 			errorMessage("请输入验证码");
 			return;
 		}
@@ -307,10 +311,10 @@ class Auth extends Component {
 		})
 		createAjax(http.get(apisPaths["captcha/verify"], {
 			phone: this.state.phone,
-			captcha: this.captcha1.current.state.value + this.captcha2.current.state.value + this.captcha3.current.state.value + this.captcha4.current.state.value
+			captcha: this.state.captcha1 + this.state.captcha2 + this.state.captcha3 + this.state.captcha4
 		}), res => {
 			this.setState({
-				captcha: this.captcha1.current.state.value + this.captcha2.current.state.value + this.captcha3.current.state.value + this.captcha4.current.state.value
+				captcha: this.state.captcha1 + this.state.captcha2 + this.state.captcha3 + this.state.captcha4
 			})
 			createAjax(http.get(apisPaths["cellphone/existence/check"], {
 				phone: this.state.phone
@@ -387,6 +391,10 @@ class Auth extends Component {
 			releaseTime: 60,
 			username: "",
 			captcha: "",
+			captcha1: "",
+			captcha2: "",
+			captcha3: "",
+			captcha4: "",
 			resetPassword: false
 		}
 	}
@@ -405,6 +413,10 @@ class Auth extends Component {
 				releaseTime: 60,
 				username: "",
 				captcha: "",
+				captcha1: "",
+				captcha2: "",
+				captcha3: "",
+				captcha4: "",
 				resetPassword: false
 			}
 		}
@@ -574,10 +586,10 @@ class Auth extends Component {
 						<p>你的手机号：+{this.state.phoneCode} {this.hidePhone(this.state.phone)}</p> 
 						<p>为了安全，我们会给你发送短信验证码</p>
 						<div className={style["modal_4_password"]}>
-							<Input className={style["modal_4_captcha"]} ref={this.captcha1} maxLength={1} onChange={e => this.nextInput(e, 2)} />
-							<Input className={style["modal_4_captcha"]} ref={this.captcha2} maxLength={1} onChange={e => this.nextInput(e, 3)} />
-							<Input className={style["modal_4_captcha"]} ref={this.captcha3} maxLength={1} onChange={e => this.nextInput(e, 4)} />
-							<Input className={style["modal_4_captcha"]} ref={this.captcha4} maxLength={1} onChange={e => this.nextInput(e, 5)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha1} value={this.state.captcha1} maxLength={1} onChange={e => this.nextInput(e, 2)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha2} value={this.state.captcha2} maxLength={1} onChange={e => this.nextInput(e, 3)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha3} value={this.state.captcha3} maxLength={1} onChange={e => this.nextInput(e, 4)} />
+							<Input className={style["modal_4_captcha"]} ref={this.captcha4} value={this.state.captcha4} maxLength={1} onChange={e => this.nextInput(e, 5)} />
 						</div> 
 						<div className={style["modal_4_captcha"] + " clearfix"}>
 							{
