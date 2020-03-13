@@ -1,12 +1,14 @@
 import React,{Component} from "React";
 import styles from "./index.less";
 import {Icon} from "antd";
+import {connect} from "react-redux";
+import {switchPlayState} from "store/Player/action";
 
 class Player extends Component {
     constructor(props) {
         this.state = {
             lock: false,
-            focus: false
+            focus: false,
         }
     }
     render() {
@@ -20,7 +22,14 @@ class Player extends Component {
                     </div>
                     <div className={styles["playbar-main"]}>
                         <div className="main clearfix">
-
+                            <div className={styles["lock-btn"]}>
+                                <Icon type="step-backward" style={{color: "#fff"}} />
+                                <Icon type={this.props.playState ? "pause-circle" : "play-circle"} style={{color: "#fff"}} />
+                                <Icon type="step-forward" style={{color: "#fff"}} />
+                            </div>
+                            <div className={styles["cover"]}>
+                                
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -28,3 +37,13 @@ class Player extends Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    playState: state.playState
+})
+
+const mapDispatchToProps = dispatch => ({
+    switchPlayState: state => dispatch(switchPlayState(state))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Player)
