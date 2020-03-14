@@ -60,7 +60,7 @@ export const deleteSong = function(params = {trackQueue: [], song: null}) {
             if(songIndex == currentIndex && currentIndex == trackQueue.length-1) {
                 playerSetting = {
                     ...playerSetting,
-                    index: trackQueue.length-1
+                    index: trackQueue.length-2
                 }
                 edit = true
             }
