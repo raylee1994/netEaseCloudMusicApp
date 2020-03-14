@@ -6,10 +6,14 @@ import {switchPlayState} from "store/Player/action";
 
 class Player extends Component {
     constructor(props) {
+        super(props)
         this.state = {
             lock: false,
             focus: false,
         }
+    }
+    static getDerivedStateFromProps(nextProps, prevState) {
+
     }
     render() {
         return (
@@ -28,7 +32,15 @@ class Player extends Component {
                                 <Icon type="step-forward" style={{color: "#fff"}} />
                             </div>
                             <div className={styles["cover"]}>
-                                
+                                {
+                                    do {
+                                        if(this.state.currentSong.id) {
+                                            <img src={require("~/common/images/default_album.jpg")} />
+                                        }else {
+                                            <img src={this.state.currentSong.al.picUrl} />
+                                        }
+                                    }
+                                }
                             </div>
                         </div>
                     </div>
@@ -39,7 +51,9 @@ class Player extends Component {
 }
 
 const mapStateToProps = state => ({
-    playState: state.playState
+    playState: state.player.playState,
+    trackQueue: state.player.trackQueue,
+    playerSetting: state.player.playerSetting
 })
 
 const mapDispatchToProps = dispatch => ({
