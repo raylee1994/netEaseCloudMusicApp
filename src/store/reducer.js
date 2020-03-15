@@ -9,5 +9,5 @@ export default combineReducers({
     is_page_loaded,
     user: userReducer,
     playlist: playlistReducer,
-    player: playerReducer
+    // player: playerReducer
 })

@@ -70,3 +70,26 @@ export function countTrasnform(count) {
         return (count/10000).toFixed(1) + '万'
     }
 }
+
+export function transformTime(time) {
+    let year = new Date(time).getFullYear()
+    let month = ("0" + new Date(time).getMonth()).substring(("0" + new Date(time).getMonth()).length-2)
+    let date = new Date(time).getDate()
+    return {
+        year,
+        month,
+        date
+    }
+}
+
+export function transformDuration(time) {
+    let newtime = time / 1000
+    let min = Math.floor(newtime / 60)
+    min = ("0" + min).substring(("0" + min).length-2)
+    let sec = newtime % 60
+    sec = ("0" + sec).substring(("0" + sec).length-2)
+    return {
+        min,
+        sec
+    }
+}

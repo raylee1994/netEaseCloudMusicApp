@@ -19,4 +19,5 @@ export default {
     "album/newest": "album/newest", //最新专辑
     "top/list": "top/list", //排行榜
     "artist/list": "artist/list", //歌手分类列表
+    "toplist": "toplist", //所有榜单
 }

@@ -130,21 +130,21 @@ class Home extends Component {
         })
     }
     getToplist() {
-        let toplist1 = http.get(apisPaths["top/list"], {idx: 3}).then(res => {
+        let toplist1 = http.get(apisPaths["top/list"], {id: '19723756'}).then(res => {
             if(res.data.code == 200) {
                 return Promise.resolve(res.data.playlist)
             }else {
                 return Promise.reject(res.data.msg)
             }
         });
-        let toplist2 = http.get(apisPaths["top/list"], {idx: 0}).then(res => {
+        let toplist2 = http.get(apisPaths["top/list"], {id: '3779629'}).then(res => {
             if(res.data.code == 200) {
                 return Promise.resolve(res.data.playlist)
             }else {
                 return Promise.reject(res.data.msg)
             }
         });
-        let toplist3 = http.get(apisPaths["top/list"], {idx: 2}).then(res => {
+        let toplist3 = http.get(apisPaths["top/list"], {id: '2884035'}).then(res => {
             if(res.data.code == 200) {
                 return Promise.resolve(res.data.playlist)
             }else {
@@ -299,7 +299,7 @@ class Home extends Component {
                             <span className={styles["no"] + (index < 3 ? (" " + styles["no-top"]) : "")}>{index+1}</span>
                             <Link to={"/song?id="+items.id}><span className={styles["nm"]}>{items.name}</span>
                             </Link>
-                            <span className={styles["oper"]}><Icon type="play-circle" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /><Icon type="plus" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /><Icon type="customer-service" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /></span>
+                            <span className={styles["oper"]}><Icon type="play-circle" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /><Icon type="plus" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /><Icon type="folder-add" style={{color: "#aaa", fontSize: "12px", marginRight: "5px"}} /></span>
                     </li>
                 )
             });

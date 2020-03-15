@@ -43,7 +43,7 @@ const topList = {
 
 module.exports = (query, request) => {
   const data = {
-    id: topList[query.idx],
+    id: query.id,
     n: 10000
   }
   return request(
