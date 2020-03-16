@@ -36,16 +36,41 @@ class TopList extends Component {
         this.getPlaylist()
     }
     render() {
-        let menuList = (
-            <h2>云音乐特色榜</h2>
-            <ul>
-                {
-                    this.state.menu.map(item => {
-                        switch (item.id) {
-                            case 3779629:
-                            case 3778678:
-                            case 2884035:
-                            case 19723756:
+        let menuList = 
+            <React.Fragment>
+                <h2>云音乐特色榜</h2>
+                <ul>
+                    {
+                        this.state.menu.map(item => {
+                            switch (item.id) {
+                                case 3779629:
+                                case 3778678:
+                                case 2884035:
+                                case 19723756:
+                                    return (
+                                        <li key={item.id} className={this.state.trackId == item.id ? styles["active"] : ""}>
+                                            <Link to={{pathname: "/toplist", search: "?id="+item.id}}>
+                                                <div className={styles["avartar"] + " fl"}>
+                                                    <img src={item.coverImgUrl} />
+                                                </div>
+                                                <div className={styles["des"]}>
+                                                    <p>{item.name}</p>
+                                                    <p>{item.updateFrequency}</p>
+                                                </div>
+                                            </Link>
+                                        </li>
+                                    )
+                                default:
+                                    return
+                            }
+                        })
+                    }
+                </ul>
+                <h2>全球媒体榜</h2>
+                <ul>
+                    {
+                        this.state.menu.map(item => {
+                            if(item.id != 3779629 && item.id != 3778678 && item.id != 2884035 && item.id != 19723756) {
                                 return (
                                     <li key={item.id} className={this.state.trackId == item.id ? styles["active"] : ""}>
                                         <Link to={{pathname: "/toplist", search: "?id="+item.id}}>
@@ -59,36 +84,12 @@ class TopList extends Component {
                                         </Link>
                                     </li>
                                 )
-                            default:
-                                return
-                        }
-                    })
-                }
-            </ul>
-            <h2>全球媒体榜</h2>
-            <ul>
-                {
-                    this.state.menu.map(item => {
-                        if(item.id != 3779629 && item.id != 3778678 && item.id != 2884035 && item.id != 19723756) {
-                            return (
-                                <li key={item.id} className={this.state.trackId == item.id ? styles["active"] : ""}>
-                                    <Link to={{pathname: "/toplist", search: "?id="+item.id}}>
-                                        <div className={styles["avartar"] + " fl"}>
-                                            <img src={item.coverImgUrl} />
-                                        </div>
-                                        <div className={styles["des"]}>
-                                            <p>{item.name}</p>
-                                            <p>{item.updateFrequency}</p>
-                                        </div>
-                                    </Link>
-                                </li>
-                            )
-                        }
-                        return
-                    })
-                }
-            </ul>
-        )
+                            }
+                            return
+                        })
+                    }
+                </ul>
+            </React.Fragment>
         <div className={styles["toplist_module"]}>
             <div className="main clearfix">
                 <div className={styles["toplist_menu"] + " fl"}>
