@@ -148,7 +148,7 @@ class Header extends Component {
                 <div className="wrap clearfix">
                     <NavLink to="/" className="logo fl"><img src={require("./images/logo.png").default} /></NavLink>
                     {
-                        routes.map(element => <NavLink key={element.path} to={element.path} className="navLink fl" activeClassName={element.activeClassName}>{element.name}</NavLink>)
+                        routes.map(element => <NavLink key={element.path} exact={element.exact} to={element.path} className="navLink fl" activeClassName={element.activeClassName}>{element.name}</NavLink>)
                     }
                     {
                         this.props.userStatus == 3 && <a className="login fr" onClick={this.props.switchAuthModal(true)}>登录</a>

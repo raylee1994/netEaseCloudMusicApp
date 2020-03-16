@@ -83,7 +83,7 @@ export function transformTime(time) {
 }
 
 export function transformDuration(time) {
-    let newtime = time / 1000
+    let newtime = Math.round(time / 1000)
     let min = Math.floor(newtime / 60)
     min = ("0" + min).substring(("0" + min).length-2)
     let sec = newtime % 60

@@ -7,7 +7,7 @@ export default [
         activeClassName: "selected"
     },
     {
-        path: "/toplist",
+        path: "/discover/toplist",
         component: "toplist",
         name: "排行榜",
         exact: false,
