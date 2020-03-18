@@ -10,9 +10,9 @@ import qs from "qs";
 function transformName(ar) {
     let names = ar.map((item, index) => {
         if(index != ar.length-1) {
-            return <Link to={{pathname:"/artist", search:"?id="+item.id}}>{item.name}/</Link>
+            return <Link to={{pathname:"/artist/song", search:"?id="+item.id}}>{item.name}/</Link>
         }else {
-            return <Link to={{pathname:"/artist", search:"?id="+item.id}}>{item.name}</Link>
+            return <Link to={{pathname:"/artist/song", search:"?id="+item.id}}>{item.name}</Link>
         }
     })
     return names
@@ -183,9 +183,7 @@ class TopList extends Component {
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <Link to={{pathname: "/artist", search: "?id="+item.ar.id}}>
-                                                                    {transformName(item.ar)}
-                                                                </Link>
+                                                                {transformName(item.ar)}
                                                             </td>
                                                         </tr>
                                                     )

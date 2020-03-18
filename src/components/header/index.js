@@ -2,7 +2,7 @@ import React,{Component} from "react";
 import {Icon,Input,AutoComplete,Menu,Avatar} from 'antd';
 import "./index.less";
 import {Link,NavLink} from "react-router-dom";
-import routes from "router";
+import routes from "router/navLink";
 import http from "apis/http";
 import apisPaths from "apis/paths";
 import {connect} from "react-redux";

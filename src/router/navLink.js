@@ -28,15 +28,8 @@ export default [
         activeClassName: "selected"
     },
     {
-        path: "/discover/artist",
+        path: "/discover//artist",
         component: "artist",
-        name: "歌手",
-        exact: false,
-        activeClassName: "selected"
-    },
-    {
-        path: "/artist",
-        component: "artist/sub",
         name: "歌手",
         exact: false,
         activeClassName: "selected"
